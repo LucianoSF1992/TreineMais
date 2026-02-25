@@ -31,5 +31,8 @@ namespace TreineMais.Models
         public ApplicationUser? Aluno { get; set; }
 
         public bool Concluido { get; set; } = false;
+
+        public string InstrutorId { get; set; } = string.Empty;
+        public ApplicationUser? Instrutor { get; set; }
     }
 }

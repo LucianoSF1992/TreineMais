@@ -93,6 +93,7 @@ namespace TreineMais.Controllers
             ViewBag.Alunos = alunos;
 
             var treinos = await _context.Treinos
+                .Where(t => t.InstrutorId == user.Id)
                 .Include(t => t.Aluno)
                 .ToListAsync();
 
@@ -134,7 +135,8 @@ namespace TreineMais.Controllers
             {
                 NomeExercicio = model.NomeTreino,
                 DiaSemana = model.DiaSemana,
-                AlunoId = model.AlunoId
+                AlunoId = model.AlunoId,
+                InstrutorId = user.Id
             };
 
             _context.Treinos.Add(treino);
