@@ -8,36 +8,58 @@ namespace TreineMais.Data
     {
         public static async Task Inicializar(IServiceProvider serviceProvider)
         {
+            var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
             var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
-            // Criar Instrutor
-            if (await userManager.FindByEmailAsync("admin@academia.com") == null)
+            // 🔹 Criar Roles
+            string[] roles = { "Admin", "Instrutor", "Aluno" };
+
+            foreach (var role in roles)
+            {
+                if (!await roleManager.RoleExistsAsync(role))
+                {
+                    await roleManager.CreateAsync(new IdentityRole(role));
+                }
+            }
+
+            // 🔹 Criar Admin padrão
+            var adminEmail = "admin@treinemais.com";
+
+            if (await userManager.FindByEmailAsync(adminEmail) == null)
             {
                 var admin = new ApplicationUser
                 {
-                    UserName = "admin@academia.com",
-                    Email = "admin@academia.com",
-                    NomeCompleto = "Instrutor Admin",
-                    TipoUsuario = "Instrutor",
+                    UserName = adminEmail,
+                    Email = adminEmail,
                     EmailConfirmed = true
                 };
 
-                await userManager.CreateAsync(admin, "admin");
+                var result = await userManager.CreateAsync(admin, "Admin123!");
+
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(admin, "Admin");
+                }
             }
 
-            // Criar Aluno
-            if (await userManager.FindByEmailAsync("aluno@academia.com") == null)
+            // 🔹 Criar Instrutor padrão
+            var instrutorEmail = "instrutor@treinemais.com";
+
+            if (await userManager.FindByEmailAsync(instrutorEmail) == null)
             {
-                var aluno = new ApplicationUser
+                var instrutor = new ApplicationUser
                 {
-                    UserName = "aluno@academia.com",
-                    Email = "aluno@academia.com",
-                    NomeCompleto = "Aluno Teste",
-                    TipoUsuario = "Aluno",
+                    UserName = instrutorEmail,
+                    Email = instrutorEmail,
                     EmailConfirmed = true
                 };
 
-                await userManager.CreateAsync(aluno, "aluno");
+                var result = await userManager.CreateAsync(instrutor, "Instrutor123!");
+
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(instrutor, "Instrutor");
+                }
             }
         }
     }
