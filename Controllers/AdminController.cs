@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using TreineMais.Models;
 using TreineMais.Data;
 using Microsoft.EntityFrameworkCore;
+using TreineMais.ViewModels;
 
 namespace TreineMais.Controllers
 {
