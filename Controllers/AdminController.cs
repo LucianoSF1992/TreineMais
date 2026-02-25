@@ -10,6 +10,7 @@ namespace TreineMais.Controllers
     [Authorize]
     public class AdminController : Controller
     {
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly AppDbContext _context;
 
         public AdminController(UserManager<ApplicationUser> userManager, AppDbContext context)
