@@ -19,6 +19,9 @@ namespace TreineMais.Controllers
         {
             var user = await _userManager.GetUserAsync(User);
 
+            if (user == null)
+                return RedirectToAction("Index", "Home");
+
             if (await _userManager.IsInRoleAsync(user, "Admin"))
                 return RedirectToAction("Admin", "Dashboard");
 
