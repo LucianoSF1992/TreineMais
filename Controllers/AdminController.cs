@@ -77,5 +77,50 @@ namespace TreineMais.Controllers
 
             return RedirectToAction("Alunos");
         }
+
+        public async Task<IActionResult> Treinos()
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user?.TipoUsuario != "Instrutor")
+                return RedirectToAction("Index", "Home");
+
+            var alunos = await _context.Users
+                .Where(u => u.TipoUsuario == "Aluno")
+                .ToListAsync();
+
+            ViewBag.Alunos = alunos;
+
+            var treinos = await _context.Treinos
+                .Include(t => t.Aluno)
+                .ToListAsync();
+
+            return View(treinos);
+        }
+
+        public async Task<IActionResult> CriarTreino()
+        {
+            var alunos = await _context.Users
+                .Where(u => u.TipoUsuario == "Aluno")
+                .ToListAsync();
+
+            ViewBag.Alunos = alunos;
+
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CriarTreino(Treino model)
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user?.TipoUsuario != "Instrutor")
+                return RedirectToAction("Index", "Home");
+
+            _context.Treinos.Add(model);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Treinos");
+        }
     }
 }

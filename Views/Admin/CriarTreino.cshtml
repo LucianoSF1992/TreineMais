@@ -1,0 +1,66 @@
+@model TreineMais.Models.Treino
+@{
+    var alunos = ViewBag.Alunos as List<TreineMais.Models.ApplicationUser>;
+}
+
+<div class="container mt-4">
+    <h2>Novo Exercício</h2>
+
+    <form asp-action="CriarTreino" method="post">
+
+        <div class="mb-3">
+            <label>Aluno</label>
+            <select asp-for="AlunoId" class="form-control">
+                @foreach (var aluno in alunos)
+                {
+                    <option value="@aluno.Id">@aluno.NomeCompleto</option>
+                }
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label>Dia da Semana</label>
+            <select asp-for="DiaSemana" class="form-control">
+                <option>Segunda</option>
+                <option>Terça</option>
+                <option>Quarta</option>
+                <option>Quinta</option>
+                <option>Sexta</option>
+                <option>Sábado</option>
+                <option>Domingo</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label>Nome do Exercício</label>
+            <input asp-for="NomeExercicio" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label>Grupo Muscular</label>
+            <input asp-for="GrupoMuscular" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label>Séries</label>
+            <input asp-for="Series" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label>Repetições</label>
+            <input asp-for="Repeticoes" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label>Descanso (segundos)</label>
+            <input asp-for="Descanso" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label>Observações</label>
+            <textarea asp-for="Observacoes" class="form-control"></textarea>
+        </div>
+
+        <button class="btn btn-primary">Salvar</button>
+    </form>
+</div>
