@@ -100,13 +100,16 @@ namespace TreineMais.Controllers
 
         public async Task<IActionResult> CriarTreino()
         {
-            var alunos = await _context.Users
-                .Where(u => u.TipoUsuario == "Aluno")
-                .ToListAsync();
+            var alunos = _context.Users
+        .Where(u => u.TipoUsuario == "Aluno")
+        .ToList();
 
-            ViewBag.Alunos = alunos;
+            var viewModel = new CriarTreinoViewModel
+            {
+                Alunos = alunos
+            };
 
-            return View();
+            return View(viewModel);
         }
 
         [HttpPost]

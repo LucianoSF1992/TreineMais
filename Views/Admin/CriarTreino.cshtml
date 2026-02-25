@@ -1,4 +1,4 @@
-@model TreineMais.Models.Treino
+@model TreineMais.ViewModels.CriarTreinoViewModel
 @{
     var alunos = ViewBag.Alunos as List<TreineMais.Models.ApplicationUser>;
 }
@@ -11,7 +11,7 @@
         <div class="mb-3">
             <label>Aluno</label>
             <select asp-for="AlunoId" class="form-control">
-                @foreach (var aluno in alunos)
+                @foreach (var aluno in Model.Alunos)
                 {
                     <option value="@aluno.Id">@aluno.NomeCompleto</option>
                 }
