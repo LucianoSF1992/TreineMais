@@ -101,9 +101,9 @@ namespace TreineMais.Controllers
 
         public async Task<IActionResult> CriarTreino()
         {
-            var alunos = _context.Users
-        .Where(u => u.TipoUsuario == "Aluno")
-        .ToList();
+            var alunos = await _context.Users
+                .Where(u => u.TipoUsuario == "Aluno")
+                .ToListAsync();
 
             var viewModel = new CriarTreinoViewModel
             {
@@ -114,14 +114,30 @@ namespace TreineMais.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CriarTreino(Treino model)
+        public async Task<IActionResult> CriarTreino(CriarTreinoViewModel model)
         {
             var user = await _userManager.GetUserAsync(User);
 
             if (user?.TipoUsuario != "Instrutor")
                 return RedirectToAction("Index", "Home");
 
-            _context.Treinos.Add(model);
+            if (!ModelState.IsValid)
+            {
+                model.Alunos = await _context.Users
+                    .Where(u => u.TipoUsuario == "Aluno")
+                    .ToListAsync();
+
+                return View(model);
+            }
+
+            var treino = new Treino
+            {
+                Nome = model.NomeTreino,
+                DiaSemana = model.DiaSemana,
+                AlunoId = model.AlunoId
+            };
+
+            _context.Treinos.Add(treino);
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Treinos");
