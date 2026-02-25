@@ -1,0 +1,28 @@
+@model IEnumerable<TreineMais.Models.Exercicio>
+
+<h2>Exercícios</h2>
+
+<a asp-action="Create" class="btn btn-primary">Novo Exercício</a>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Grupo Muscular</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Nome</td>
+                <td>@item.GrupoMuscular</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Excluir</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

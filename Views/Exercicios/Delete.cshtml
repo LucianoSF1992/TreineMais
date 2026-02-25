@@ -1,0 +1,10 @@
+@model TreineMais.Models.Exercicio
+
+<h2>Excluir Exercício</h2>
+
+<p>Tem certeza que deseja excluir <strong>@Model.Nome</strong>?</p>
+
+<form asp-action="Delete">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Excluir</button>
+</form>
