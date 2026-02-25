@@ -1,0 +1,41 @@
+@model List<TreineMais.Models.ApplicationUser>
+
+@{
+    ViewData["Title"] = "Alunos";
+}
+
+<div class="container mt-4">
+    <h2>Alunos Cadastrados</h2>
+
+    <a class="btn btn-success mb-3" asp-action="CriarAluno">
+        + Adicionar Novo Aluno
+    </a>
+
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Email</th>
+                <th>Idade</th>
+                <th>Objetivo</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var aluno in Model)
+            {
+                <tr>
+                    <td>@aluno.NomeCompleto</td>
+                    <td>@aluno.Email</td>
+                    <td>@aluno.Idade</td>
+                    <td>@aluno.Objetivo</td>
+                    <td>
+                        <a class="btn btn-danger btn-sm" asp-action="ExcluirAluno" asp-route-id="@aluno.Id">
+                            Excluir
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
