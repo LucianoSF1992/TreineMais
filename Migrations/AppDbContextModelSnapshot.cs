@@ -349,7 +349,7 @@ namespace TreineMais.Migrations
                     b.HasOne("TreineMais.Models.ApplicationUser", "Instrutor")
                         .WithMany()
                         .HasForeignKey("InstrutorId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Aluno");

@@ -12,7 +12,7 @@ using TreineMais.Data;
 namespace TreineMais.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260225191259_AdicionaInstrutorNoTreino")]
+    [Migration("20260225192041_AdicionaInstrutorNoTreino")]
     partial class AdicionaInstrutorNoTreino
     {
         /// <inheritdoc />
@@ -352,7 +352,7 @@ namespace TreineMais.Migrations
                     b.HasOne("TreineMais.Models.ApplicationUser", "Instrutor")
                         .WithMany()
                         .HasForeignKey("InstrutorId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Aluno");

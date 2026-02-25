@@ -12,5 +12,16 @@ namespace TreineMais.Data
         }
 
         public DbSet<Treino> Treinos { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+
+            builder.Entity<Treino>()
+                .HasOne(t => t.Instrutor)
+                .WithMany()
+                .HasForeignKey(t => t.InstrutorId)
+                .OnDelete(DeleteBehavior.Restrict);
+        }
     }
 }

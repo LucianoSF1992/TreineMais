@@ -28,7 +28,7 @@ namespace TreineMais.Migrations
                 column: "InstrutorId",
                 principalTable: "AspNetUsers",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.Restrict);
         }
 
         /// <inheritdoc />
