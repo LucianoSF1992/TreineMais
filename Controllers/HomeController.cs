@@ -1,31 +1,32 @@
-using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
 using TreineMais.Models;
 
-namespace TreineMais.Controllers;
-
-public class HomeController : Controller
+namespace TreineMais.Controllers
 {
-    private readonly ILogger<HomeController> _logger;
-
-    public HomeController(ILogger<HomeController> logger)
+    public class HomeController : Controller
     {
-        _logger = logger;
-    }
+        private readonly UserManager<ApplicationUser> _userManager;
 
-    public IActionResult Index()
-    {
-        return View();
-    }
+        public HomeController(UserManager<ApplicationUser> userManager)
+        {
+            _userManager = userManager;
+        }
 
-    public IActionResult Privacy()
-    {
-        return View();
-    }
+        public async Task<IActionResult> Index()
+        {
+            if (User.Identity?.IsAuthenticated == true)
+            {
+                var user = await _userManager.GetUserAsync(User);
 
-    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public IActionResult Error()
-    {
-        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+                if (user?.TipoUsuario == "Instrutor")
+                    return RedirectToAction("Index", "Admin");
+
+                if (user?.TipoUsuario == "Aluno")
+                    return RedirectToAction("Index", "Aluno");
+            }
+
+            return View();
+        }
     }
 }
