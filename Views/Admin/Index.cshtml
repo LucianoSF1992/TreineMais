@@ -1,0 +1,35 @@
+@{
+    ViewData["Title"] = "Painel do Instrutor";
+}
+
+<div class="container-fluid">
+    <div class="row">
+
+        <!-- Menu lateral -->
+        <div class="col-md-3 col-lg-2 bg-dark text-white p-3 min-vh-100">
+            <h4 class="mb-4">Treine+</h4>
+
+            <ul class="nav flex-column">
+                <li class="nav-item mb-2">
+                    <a class="nav-link text-white" href="#">Alunos</a>
+                </li>
+                <li class="nav-item mb-2">
+                    <a class="nav-link text-white" href="#">Treinos</a>
+                </li>
+                <li class="nav-item mb-2">
+                    <a class="nav-link text-white" href="#">Alterar senha</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="/">Visualizar como aluno</a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Conteúdo principal -->
+        <div class="col-md-9 col-lg-10 p-4">
+            <h2>Olá, @ViewBag.Nome 👋</h2>
+            <p>Bem-vindo ao painel do instrutor.</p>
+        </div>
+
+    </div>
+</div>
