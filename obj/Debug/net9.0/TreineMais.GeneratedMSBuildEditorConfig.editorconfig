@@ -48,8 +48,20 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cVHJlaW5vcy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/lucia/OneDrive/Cursos/Curso Meu Sistema Lucrativo/Projetos Pessoais/TreineMais/Views/Dashboard/Admin.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGFzaGJvYXJkXEFkbWluLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/lucia/OneDrive/Cursos/Curso Meu Sistema Lucrativo/Projetos Pessoais/TreineMais/Views/Dashboard/Aluno.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGFzaGJvYXJkXEFsdW5vLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/lucia/OneDrive/Cursos/Curso Meu Sistema Lucrativo/Projetos Pessoais/TreineMais/Views/Dashboard/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGFzaGJvYXJkXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/lucia/OneDrive/Cursos/Curso Meu Sistema Lucrativo/Projetos Pessoais/TreineMais/Views/Dashboard/Instrutor.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGFzaGJvYXJkXEluc3RydXRvci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/lucia/OneDrive/Cursos/Curso Meu Sistema Lucrativo/Projetos Pessoais/TreineMais/Views/Exercicios/Create.cshtml]

@@ -6,7 +6,20 @@ namespace TreineMais.Controllers
     [Authorize]
     public class DashboardController : Controller
     {
-        public IActionResult Index()
+        [Authorize(Roles = "Admin")]
+        public IActionResult Admin()
+        {
+            return View();
+        }
+
+        [Authorize(Roles = "Instrutor")]
+        public IActionResult Instrutor()
+        {
+            return View();
+        }
+
+        [Authorize(Roles = "Aluno")]
+        public IActionResult Aluno()
         {
             return View();
         }
