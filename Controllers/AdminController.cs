@@ -133,7 +133,7 @@ namespace TreineMais.Controllers
 
             var treino = new Treino
             {
-                NomeExercicio = model.NomeTreino,
+                Nome = model.NomeTreino,
                 DiaSemana = model.DiaSemana,
                 AlunoId = model.AlunoId,
                 InstrutorId = user.Id

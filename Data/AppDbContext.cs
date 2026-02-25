@@ -12,6 +12,8 @@ namespace TreineMais.Data
         }
 
         public DbSet<Treino> Treinos { get; set; }
+        public DbSet<Exercicio> Exercicios { get; set; }
+        public DbSet<TreinoExercicio> TreinosExercicios { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -21,6 +23,18 @@ namespace TreineMais.Data
                 .HasOne(t => t.Instrutor)
                 .WithMany()
                 .HasForeignKey(t => t.InstrutorId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<TreinoExercicio>()
+                .HasOne(te => te.Treino)
+                .WithMany(t => t.TreinosExercicios)
+                .HasForeignKey(te => te.TreinoId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<TreinoExercicio>()
+                .HasOne(te => te.Exercicio)
+                .WithMany(e => e.TreinosExercicios)
+                .HasForeignKey(te => te.ExercicioId)
                 .OnDelete(DeleteBehavior.Restrict);
         }
     }

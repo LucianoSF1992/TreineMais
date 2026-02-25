@@ -236,6 +236,29 @@ namespace TreineMais.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("TreineMais.Models.Exercicio", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Descricao")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("GrupoMuscular")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Exercicios");
+                });
+
             modelBuilder.Entity("TreineMais.Models.Treino", b =>
                 {
                     b.Property<int>("Id")
@@ -251,32 +274,17 @@ namespace TreineMais.Migrations
                     b.Property<bool>("Concluido")
                         .HasColumnType("bit");
 
-                    b.Property<int>("Descanso")
-                        .HasColumnType("int");
-
                     b.Property<string>("DiaSemana")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("GrupoMuscular")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("InstrutorId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("NomeExercicio")
+                    b.Property<string>("Nome")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Observacoes")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Repeticoes")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Series")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -285,6 +293,44 @@ namespace TreineMais.Migrations
                     b.HasIndex("InstrutorId");
 
                     b.ToTable("Treinos");
+                });
+
+            modelBuilder.Entity("TreineMais.Models.TreinoExercicio", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Descanso")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ExercicioId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Observacoes")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Ordem")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Repeticoes")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Series")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TreinoId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ExercicioId");
+
+                    b.HasIndex("TreinoId");
+
+                    b.ToTable("TreinosExercicios");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -355,6 +401,35 @@ namespace TreineMais.Migrations
                     b.Navigation("Aluno");
 
                     b.Navigation("Instrutor");
+                });
+
+            modelBuilder.Entity("TreineMais.Models.TreinoExercicio", b =>
+                {
+                    b.HasOne("TreineMais.Models.Exercicio", "Exercicio")
+                        .WithMany("TreinosExercicios")
+                        .HasForeignKey("ExercicioId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("TreineMais.Models.Treino", "Treino")
+                        .WithMany("TreinosExercicios")
+                        .HasForeignKey("TreinoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Exercicio");
+
+                    b.Navigation("Treino");
+                });
+
+            modelBuilder.Entity("TreineMais.Models.Exercicio", b =>
+                {
+                    b.Navigation("TreinosExercicios");
+                });
+
+            modelBuilder.Entity("TreineMais.Models.Treino", b =>
+                {
+                    b.Navigation("TreinosExercicios");
                 });
 #pragma warning restore 612, 618
         }

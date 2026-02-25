@@ -8,31 +8,27 @@ namespace TreineMais.Models
         public int Id { get; set; }
 
         [Required]
-        public string? DiaSemana { get; set; }
+        public string Nome { get; set; } = string.Empty; // Ex: Treino A
 
         [Required]
-        public string? NomeExercicio { get; set; }
-
-        public string? GrupoMuscular { get; set; }
-
-        public int Series { get; set; }
-
-        public int Repeticoes { get; set; }
-
-        public int Descanso { get; set; }
-
-        public string? Observacoes { get; set; }
+        public string DiaSemana { get; set; } = string.Empty;
 
         // Relacionamento com aluno
         [Required]
-        public string? AlunoId { get; set; }
+        public string AlunoId { get; set; } = string.Empty;
 
         [ForeignKey("AlunoId")]
         public ApplicationUser? Aluno { get; set; }
 
+        // Relacionamento com instrutor
+        [Required]
+        public string InstrutorId { get; set; } = string.Empty;
+
+        public ApplicationUser? Instrutor { get; set; }
+
         public bool Concluido { get; set; } = false;
 
-        public string InstrutorId { get; set; } = string.Empty;
-        public ApplicationUser? Instrutor { get; set; }
+        // Lista de exercícios da ficha
+        public ICollection<TreinoExercicio>? TreinosExercicios { get; set; }
     }
 }

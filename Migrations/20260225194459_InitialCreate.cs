@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace TreineMais.Migrations
 {
     /// <inheritdoc />
-    public partial class CriacaoEntidadesIniciais : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -52,6 +52,21 @@ namespace TreineMais.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Exercicios",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Nome = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    GrupoMuscular = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Descricao = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Exercicios", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -166,14 +181,10 @@ namespace TreineMais.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    Nome = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DiaSemana = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    NomeExercicio = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    GrupoMuscular = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Series = table.Column<int>(type: "int", nullable: false),
-                    Repeticoes = table.Column<int>(type: "int", nullable: false),
-                    Descanso = table.Column<int>(type: "int", nullable: false),
-                    Observacoes = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     AlunoId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    InstrutorId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Concluido = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
@@ -183,6 +194,43 @@ namespace TreineMais.Migrations
                         name: "FK_Treinos_AspNetUsers_AlunoId",
                         column: x => x.AlunoId,
                         principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Treinos_AspNetUsers_InstrutorId",
+                        column: x => x.InstrutorId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TreinosExercicios",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    TreinoId = table.Column<int>(type: "int", nullable: false),
+                    ExercicioId = table.Column<int>(type: "int", nullable: false),
+                    Series = table.Column<int>(type: "int", nullable: false),
+                    Repeticoes = table.Column<int>(type: "int", nullable: false),
+                    Descanso = table.Column<int>(type: "int", nullable: false),
+                    Observacoes = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Ordem = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TreinosExercicios", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_TreinosExercicios_Exercicios_ExercicioId",
+                        column: x => x.ExercicioId,
+                        principalTable: "Exercicios",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_TreinosExercicios_Treinos_TreinoId",
+                        column: x => x.TreinoId,
+                        principalTable: "Treinos",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -230,6 +278,21 @@ namespace TreineMais.Migrations
                 name: "IX_Treinos_AlunoId",
                 table: "Treinos",
                 column: "AlunoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Treinos_InstrutorId",
+                table: "Treinos",
+                column: "InstrutorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TreinosExercicios_ExercicioId",
+                table: "TreinosExercicios",
+                column: "ExercicioId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TreinosExercicios_TreinoId",
+                table: "TreinosExercicios",
+                column: "TreinoId");
         }
 
         /// <inheritdoc />
@@ -251,10 +314,16 @@ namespace TreineMais.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Treinos");
+                name: "TreinosExercicios");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "Exercicios");
+
+            migrationBuilder.DropTable(
+                name: "Treinos");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
