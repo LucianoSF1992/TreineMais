@@ -1,8 +1,53 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "TreineMais";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container mt-5">
+
+    <!-- Hero Section -->
+    <div class="text-center py-5">
+        <h1 class="display-4 fw-bold">Treine+</h1>
+        <p class="lead mt-3">
+            Plataforma completa para gestão de treinos em academias.
+        </p>
+
+        <div class="mt-4">
+            <a class="btn btn-primary btn-lg me-2"         asp-area="Identity"              asp-page="/Account/Register">
+                Começar Agora
+            </a>
+
+            <a class="btn btn-outline-dark btn-lg"       asp-area="Identity"               asp-page="/Account/Login">
+                Já tenho conta
+            </a>
+        </div>
+    </div>
+
+    <!-- Benefícios -->
+    <div class="row text-center mt-5">
+
+        <div class="col-md-4">
+            <h4>🏋 Gestão de Instrutores</h4>
+            <p>Controle completo dos profissionais e alunos vinculados.</p>
+        </div>
+
+        <div class="col-md-4">
+            <h4>📋 Treinos Personalizados</h4>
+            <p>Criação e acompanhamento de treinos individualizados.</p>
+        </div>
+
+        <div class="col-md-4">
+            <h4>📊 Acompanhamento</h4>
+            <p>Organização e evolução do desempenho dos alunos.</p>
+        </div>
+
+    </div>
+
+    <!-- Call to Action Final -->
+    <div class="text-center mt-5 py-4 border-top">
+        <h3>Pronto para transformar sua academia?</h3>
+        <a class="btn btn-success btn-lg mt-3" asp-area="Identity" asp-page="/Account/Register">
+            Criar Conta Gratuita
+        </a>
+    </div>
+
 </div>
