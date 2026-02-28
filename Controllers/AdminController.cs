@@ -36,23 +36,28 @@ namespace TreineMais.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CriarAluno(ApplicationUser model, string senha)
+        public async Task<IActionResult> CriarAluno(ApplicationUser? model, string? senha)
         {
-            // pega o email "seguro" (não-null) e já tira espaços
-            var email = model?.Email?.Trim();
+            if (model is null)
+                return BadRequest();
 
-            // validações básicas
+            var email = model.Email?.Trim();
+
+            // validações básicas (com retorno cedo => sem warnings)
             if (string.IsNullOrWhiteSpace(email))
+            {
                 ModelState.AddModelError(nameof(model.Email), "E-mail é obrigatório.");
+                return View(model);
+            }
 
             if (string.IsNullOrWhiteSpace(senha))
+            {
                 ModelState.AddModelError(nameof(senha), "Senha é obrigatória.");
-
-            if (!ModelState.IsValid)
                 return View(model);
+            }
 
             // evita duplicar e-mail
-            var existing = await _userManager.FindByEmailAsync(email); // <- agora sem warning
+            var existing = await _userManager.FindByEmailAsync(email);
             if (existing != null)
             {
                 ModelState.AddModelError(nameof(model.Email), "Já existe um usuário com este e-mail.");
