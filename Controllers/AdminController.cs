@@ -38,8 +38,11 @@ namespace TreineMais.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CriarAluno(ApplicationUser model, string senha)
         {
+            // pega o email "seguro" (não-null) e já tira espaços
+            var email = model?.Email?.Trim();
+
             // validações básicas
-            if (string.IsNullOrWhiteSpace(model?.Email))
+            if (string.IsNullOrWhiteSpace(email))
                 ModelState.AddModelError(nameof(model.Email), "E-mail é obrigatório.");
 
             if (string.IsNullOrWhiteSpace(senha))
@@ -49,7 +52,7 @@ namespace TreineMais.Controllers
                 return View(model);
 
             // evita duplicar e-mail
-            var existing = await _userManager.FindByEmailAsync(model.Email);
+            var existing = await _userManager.FindByEmailAsync(email); // <- agora sem warning
             if (existing != null)
             {
                 ModelState.AddModelError(nameof(model.Email), "Já existe um usuário com este e-mail.");
@@ -58,8 +61,8 @@ namespace TreineMais.Controllers
 
             var novoAluno = new ApplicationUser
             {
-                UserName = model.Email,
-                Email = model.Email,
+                UserName = email,
+                Email = email,
                 NomeCompleto = model.NomeCompleto,
                 Idade = model.Idade,
                 Objetivo = model.Objetivo,
@@ -71,7 +74,6 @@ namespace TreineMais.Controllers
 
             if (result.Succeeded)
             {
-                // garante Role do aluno
                 await _userManager.AddToRoleAsync(novoAluno, "Aluno");
                 return RedirectToAction(nameof(Alunos));
             }
