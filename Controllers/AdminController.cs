@@ -8,7 +8,7 @@ using TreineMais.ViewModels;
 
 namespace TreineMais.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin,Instrutor")]
     public class AdminController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
@@ -22,11 +22,6 @@ namespace TreineMais.Controllers
 
         public async Task<IActionResult> Alunos()
         {
-            var user = await _userManager.GetUserAsync(User);
-
-            if (user?.TipoUsuario != "Instrutor")
-                return RedirectToAction("Index", "Home");
-
             var alunos = await _context.Users
                 .Where(u => u.TipoUsuario == "Aluno")
                 .ToListAsync();
@@ -42,11 +37,6 @@ namespace TreineMais.Controllers
         [HttpPost]
         public async Task<IActionResult> CriarAluno(ApplicationUser model, string senha)
         {
-            var user = await _userManager.GetUserAsync(User);
-
-            if (user?.TipoUsuario != "Instrutor")
-                return RedirectToAction("Index", "Home");
-
             var novoAluno = new ApplicationUser
             {
                 UserName = model.Email,
@@ -61,7 +51,11 @@ namespace TreineMais.Controllers
             var result = await _userManager.CreateAsync(novoAluno, senha);
 
             if (result.Succeeded)
-                return RedirectToAction("Alunos");
+            {
+                // ✅ garante Role do aluno
+                await _userManager.AddToRoleAsync(novoAluno, "Aluno");
+                return RedirectToAction(nameof(Alunos));
+            }
 
             foreach (var error in result.Errors)
                 ModelState.AddModelError("", error.Description);
@@ -76,15 +70,12 @@ namespace TreineMais.Controllers
             if (aluno != null)
                 await _userManager.DeleteAsync(aluno);
 
-            return RedirectToAction("Alunos");
+            return RedirectToAction(nameof(Alunos));
         }
 
         public async Task<IActionResult> Treinos()
         {
             var user = await _userManager.GetUserAsync(User);
-
-            if (user?.TipoUsuario != "Instrutor")
-                return RedirectToAction("Index", "Home");
 
             var alunos = await _context.Users
                 .Where(u => u.TipoUsuario == "Aluno")
@@ -117,11 +108,6 @@ namespace TreineMais.Controllers
         [HttpPost]
         public async Task<IActionResult> CriarTreino(CriarTreinoViewModel model)
         {
-            var user = await _userManager.GetUserAsync(User);
-
-            if (user?.TipoUsuario != "Instrutor")
-                return RedirectToAction("Index", "Home");
-
             if (!ModelState.IsValid)
             {
                 model.Alunos = await _context.Users
@@ -130,6 +116,8 @@ namespace TreineMais.Controllers
 
                 return View(model);
             }
+
+            var user = await _userManager.GetUserAsync(User);
 
             var treino = new Treino
             {
@@ -142,7 +130,7 @@ namespace TreineMais.Controllers
             _context.Treinos.Add(treino);
             await _context.SaveChangesAsync();
 
-            return RedirectToAction("Treinos");
+            return RedirectToAction(nameof(Treinos));
         }
     }
 }
