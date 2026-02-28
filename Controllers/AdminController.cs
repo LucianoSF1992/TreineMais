@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using TreineMais.Models;
 using TreineMais.Data;
-using Microsoft.EntityFrameworkCore;
+using TreineMais.Models;
 using TreineMais.ViewModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace TreineMais.Controllers
 {
@@ -35,8 +35,27 @@ namespace TreineMais.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> CriarAluno(ApplicationUser model, string senha)
         {
+            // validações básicas
+            if (string.IsNullOrWhiteSpace(model?.Email))
+                ModelState.AddModelError(nameof(model.Email), "E-mail é obrigatório.");
+
+            if (string.IsNullOrWhiteSpace(senha))
+                ModelState.AddModelError(nameof(senha), "Senha é obrigatória.");
+
+            if (!ModelState.IsValid)
+                return View(model);
+
+            // evita duplicar e-mail
+            var existing = await _userManager.FindByEmailAsync(model.Email);
+            if (existing != null)
+            {
+                ModelState.AddModelError(nameof(model.Email), "Já existe um usuário com este e-mail.");
+                return View(model);
+            }
+
             var novoAluno = new ApplicationUser
             {
                 UserName = model.Email,
@@ -52,19 +71,24 @@ namespace TreineMais.Controllers
 
             if (result.Succeeded)
             {
-                // ✅ garante Role do aluno
+                // garante Role do aluno
                 await _userManager.AddToRoleAsync(novoAluno, "Aluno");
                 return RedirectToAction(nameof(Alunos));
             }
 
             foreach (var error in result.Errors)
-                ModelState.AddModelError("", error.Description);
+                ModelState.AddModelError(string.Empty, error.Description);
 
             return View(model);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> ExcluirAluno(string id)
         {
+            if (string.IsNullOrWhiteSpace(id))
+                return RedirectToAction(nameof(Alunos));
+
             var aluno = await _userManager.FindByIdAsync(id);
 
             if (aluno != null)
@@ -76,6 +100,7 @@ namespace TreineMais.Controllers
         public async Task<IActionResult> Treinos()
         {
             var user = await _userManager.GetUserAsync(User);
+            if (user == null) return Challenge(); // força login se algo estiver errado
 
             var alunos = await _context.Users
                 .Where(u => u.TipoUsuario == "Aluno")
@@ -106,8 +131,12 @@ namespace TreineMais.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> CriarTreino(CriarTreinoViewModel model)
         {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return Challenge();
+
             if (!ModelState.IsValid)
             {
                 model.Alunos = await _context.Users
@@ -116,8 +145,6 @@ namespace TreineMais.Controllers
 
                 return View(model);
             }
-
-            var user = await _userManager.GetUserAsync(User);
 
             var treino = new Treino
             {
