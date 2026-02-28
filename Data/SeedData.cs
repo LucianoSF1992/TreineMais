@@ -61,6 +61,27 @@ namespace TreineMais.Data
                     await userManager.AddToRoleAsync(instrutor, "Instrutor");
                 }
             }
+
+            // 🔹 Criar Aluno padrão (para testar redirecionamento)
+            var alunoEmail = "aluno@treinemais.com";
+
+            if (await userManager.FindByEmailAsync(alunoEmail) == null)
+            {
+                var aluno = new ApplicationUser
+                {
+                    UserName = alunoEmail,
+                    Email = alunoEmail,
+                    EmailConfirmed = true,
+                    TipoUsuario = "Aluno"
+                };
+
+                var result = await userManager.CreateAsync(aluno, "Aluno123!");
+
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(aluno, "Aluno");
+                }
+            }
         }
     }
 }
