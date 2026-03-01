@@ -1,0 +1,74 @@
+@model TreineMais.ViewModels.Treinos.AlunoTreinosViewModel
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h2 class="mb-0">Ficha do Aluno</h2>
+        <small class="text-muted">@Model.AlunoNome • @Model.AlunoEmail</small>
+    </div>
+
+    <a class="btn btn-outline-secondary" asp-controller="Dashboard" asp-action="Instrutor">Voltar</a>
+</div>
+
+@if (!Model.Treinos.Any())
+{
+    <div class="alert alert-info">Ainda não há treinos para este aluno.</div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>Treino</th>
+                    <th>Dia</th>
+                    <th>Status</th>
+                    <th class="text-end">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var t in Model.Treinos)
+                {
+                    <tr>
+                        <td class="fw-semibold">@t.Nome</td>
+                        <td>@t.DiaSemana</td>
+                        <td>
+                            @if (t.Concluido)
+                            {
+                                <span class="badge bg-success">Concluído</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-warning text-dark">Pendente</span>
+                            }
+                        </td>
+                        <td class="text-end">
+                            @if (!t.Concluido)
+                            {
+                                <form asp-controller="Treinos" asp-action="ConcluirInstrutor" method="post" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@t.Id" />
+                                    <button class="btn btn-sm btn-success" type="submit">Concluir</button>
+                                </form>
+                            }
+                            else
+                            {
+                                <form asp-controller="Treinos" asp-action="ReabrirInstrutor" method="post" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@t.Id" />
+                                    <button class="btn btn-sm btn-outline-secondary" type="submit">Reabrir</button>
+                                </form>
+                            }
+
+                            <form asp-controller="Treinos" asp-action="ExcluirInstrutor" method="post" class="d-inline"
+                                  onsubmit="return confirm('Excluir este treino?');">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@t.Id" />
+                                <button class="btn btn-sm btn-outline-danger" type="submit">Excluir</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
