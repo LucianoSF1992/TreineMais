@@ -34,6 +34,7 @@ else
                     <th>Dia</th>
                     <th>Instrutor</th>
                     <th>Status</th>
+                    <th class="text-end">Ações</th>
                 </tr>
             </thead>
             <tbody>
@@ -51,6 +52,28 @@ else
                             else
                             {
                                 <span class="badge bg-warning text-dark">Pendente</span>
+                            }
+                        </td>
+                        <td class="text-end">
+                            @if (!t.Concluido)
+                            {
+                                <form asp-controller="Treinos" asp-action="Concluir" method="post" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@t.Id" />
+                                    <button type="submit" class="btn btn-sm btn-success">
+                                        Marcar concluído
+                                    </button>
+                                </form>
+                            }
+                            else
+                            {
+                                <form asp-controller="Treinos" asp-action="Reabrir" method="post" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@t.Id" />
+                                    <button type="submit" class="btn btn-sm btn-outline-secondary">
+                                        Reabrir
+                                    </button>
+                                </form>
                             }
                         </td>
                     </tr>
