@@ -1,51 +1,64 @@
 @model TreineMais.ViewModels.Dashboard.InstrutorDashboardViewModel
 
-<h2 class="mb-4">Dashboard - Instrutor</h2>
+<div class="d-flex align-items-center justify-content-between mb-4">
+    <div>
+        <h2 class="mb-0">Dashboard - Instrutor</h2>
+        <small class="text-muted">Seus treinos e acessos rápidos</small>
+    </div>
+    <a class="btn btn-primary" asp-controller="Admin" asp-action="CriarTreino">Criar Treino</a>
+</div>
 
 <div class="row g-3 mb-4">
-    <div class="col-md-3">
-        <div class="card p-3">
-            <h6>Total de Alunos</h6>
-            <h3>@Model.TotalAlunos</h3>
+    <div class="col-md-4">
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
+                <div class="text-muted">Meus Treinos</div>
+                <div class="display-6 fw-bold">@Model.TotalTreinos</div>
+            </div>
         </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card p-3">
-            <h6>Meus Treinos</h6>
-            <h3>@Model.TotalTreinos</h3>
-        </div>
-    </div>
-    <div class="col-md-6 d-flex align-items-center justify-content-end">
-        <a class="btn btn-primary" asp-controller="Admin" asp-action="CriarTreino">Criar Treino</a>
     </div>
 </div>
 
-<h5 class="mb-2">Últimos Treinos</h5>
+<h5 class="mb-2">Últimos treinos</h5>
+
 @if (!Model.MeusTreinos.Any())
 {
-    <p>Nenhum treino cadastrado ainda.</p>
+    <div class="alert alert-info">Você ainda não cadastrou treinos.</div>
 }
 else
 {
     <div class="table-responsive">
-        <table class="table table-striped">
+        <table class="table table-hover align-middle">
             <thead>
                 <tr>
-                    <th>Nome</th>
+                    <th>Treino</th>
                     <th>Dia</th>
                     <th>Aluno</th>
+                    <th>Status</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var t in Model.MeusTreinos)
                 {
                     <tr>
-                        <td>@t.Nome</td>
+                        <td class="fw-semibold">@t.Nome</td>
                         <td>@t.DiaSemana</td>
                         <td>@(t.Aluno?.NomeCompleto ?? t.Aluno?.Email ?? "—")</td>
+                        <td>
+                            @if (t.Concluido)
+                            {
+                                <span class="badge bg-success">Concluído</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-warning text-dark">Pendente</span>
+                            }
+                        </td>
                     </tr>
                 }
             </tbody>
         </table>
     </div>
+
+    <a class="btn btn-outline-primary" asp-controller="Admin" asp-action="Treinos">Ver todos meus treinos</a>
 }

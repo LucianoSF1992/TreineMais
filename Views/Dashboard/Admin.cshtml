@@ -1,37 +1,53 @@
 @model TreineMais.ViewModels.Dashboard.AdminDashboardViewModel
 
-<h2 class="mb-4">Dashboard - Admin</h2>
+<div class="d-flex align-items-center justify-content-between mb-4">
+    <div>
+        <h2 class="mb-0">Dashboard - Admin</h2>
+        <small class="text-muted">Visão geral do sistema</small>
+    </div>
+    <a class="btn btn-outline-secondary" asp-controller="Dashboard" asp-action="Index">Atualizar</a>
+</div>
 
 <div class="row g-3">
     <div class="col-md-3">
-        <div class="card p-3">
-            <h6>Total de Usuários</h6>
-            <h3>@Model.TotalUsuarios</h3>
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
+                <div class="text-muted">Usuários</div>
+                <div class="display-6 fw-bold">@Model.TotalUsuarios</div>
+            </div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card p-3">
-            <h6>Total de Alunos</h6>
-            <h3>@Model.TotalAlunos</h3>
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
+                <div class="text-muted">Alunos</div>
+                <div class="display-6 fw-bold">@Model.TotalAlunos</div>
+            </div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card p-3">
-            <h6>Total de Instrutores</h6>
-            <h3>@Model.TotalInstrutores</h3>
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
+                <div class="text-muted">Instrutores</div>
+                <div class="display-6 fw-bold">@Model.TotalInstrutores</div>
+            </div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card p-3">
-            <h6>Total de Treinos</h6>
-            <h3>@Model.TotalTreinos</h3>
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
+                <div class="text-muted">Treinos</div>
+                <div class="display-6 fw-bold">@Model.TotalTreinos</div>
+            </div>
         </div>
     </div>
 </div>
 
 <hr class="my-4" />
 
-<div class="d-flex gap-2">
+<div class="d-flex flex-wrap gap-2">
     <a class="btn btn-primary" asp-controller="Admin" asp-action="Alunos">Gerenciar Alunos</a>
-    <a class="btn btn-outline-primary" asp-controller="Admin" asp-action="Treinos">Gerenciar Treinos</a>
+    <a class="btn btn-outline-primary" asp-controller="Admin" asp-action="CriarAluno">Criar Aluno</a>
+    <a class="btn btn-outline-primary" asp-controller="Admin" asp-action="Treinos">Treinos</a>
+    <a class="btn btn-outline-primary" asp-controller="Admin" asp-action="CriarTreino">Criar Treino</a>
 </div>
