@@ -60,7 +60,7 @@ namespace TreineMais.Controllers
                 .Include(t => t.Aluno)
                 .OrderByDescending(t => t.Id)
                 .Take(10)
-                .Select(t => new TreinoMais.ViewModels.Dashboard.TreinoResumoViewModel
+                .Select(t => new TreineMais.ViewModels.Dashboard.TreinoResumoViewModel
                 {
                     TreinoId = t.Id,
                     Nome = t.Nome,
