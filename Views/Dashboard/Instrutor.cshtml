@@ -1,1 +1,51 @@
-<h2>Dashboard Instrutor</h2>
+@model TreineMais.ViewModels.Dashboard.InstrutorDashboardViewModel
+
+<h2 class="mb-4">Dashboard - Instrutor</h2>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="card p-3">
+            <h6>Total de Alunos</h6>
+            <h3>@Model.TotalAlunos</h3>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card p-3">
+            <h6>Meus Treinos</h6>
+            <h3>@Model.TotalTreinos</h3>
+        </div>
+    </div>
+    <div class="col-md-6 d-flex align-items-center justify-content-end">
+        <a class="btn btn-primary" asp-controller="Admin" asp-action="CriarTreino">Criar Treino</a>
+    </div>
+</div>
+
+<h5 class="mb-2">Últimos Treinos</h5>
+@if (!Model.MeusTreinos.Any())
+{
+    <p>Nenhum treino cadastrado ainda.</p>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Dia</th>
+                    <th>Aluno</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var t in Model.MeusTreinos)
+                {
+                    <tr>
+                        <td>@t.Nome</td>
+                        <td>@t.DiaSemana</td>
+                        <td>@(t.Aluno?.NomeCompleto ?? t.Aluno?.Email ?? "—")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

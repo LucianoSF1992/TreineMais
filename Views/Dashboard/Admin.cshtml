@@ -1,1 +1,37 @@
-<h2>Dashboard Admin</h2>
+@model TreineMais.ViewModels.Dashboard.AdminDashboardViewModel
+
+<h2 class="mb-4">Dashboard - Admin</h2>
+
+<div class="row g-3">
+    <div class="col-md-3">
+        <div class="card p-3">
+            <h6>Total de Usuários</h6>
+            <h3>@Model.TotalUsuarios</h3>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card p-3">
+            <h6>Total de Alunos</h6>
+            <h3>@Model.TotalAlunos</h3>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card p-3">
+            <h6>Total de Instrutores</h6>
+            <h3>@Model.TotalInstrutores</h3>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card p-3">
+            <h6>Total de Treinos</h6>
+            <h3>@Model.TotalTreinos</h3>
+        </div>
+    </div>
+</div>
+
+<hr class="my-4" />
+
+<div class="d-flex gap-2">
+    <a class="btn btn-primary" asp-controller="Admin" asp-action="Alunos">Gerenciar Alunos</a>
+    <a class="btn btn-outline-primary" asp-controller="Admin" asp-action="Treinos">Gerenciar Treinos</a>
+</div>

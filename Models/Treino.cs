@@ -24,6 +24,7 @@ namespace TreineMais.Models
         [Required]
         public string InstrutorId { get; set; } = string.Empty;
 
+        [ForeignKey("InstrutorId")]
         public ApplicationUser? Instrutor { get; set; }
 
         public bool Concluido { get; set; } = false;

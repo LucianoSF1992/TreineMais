@@ -1,1 +1,42 @@
-<h2>Dashboard Aluno</h2>
+@model TreineMais.ViewModels.Dashboard.AlunoDashboardViewModel
+
+<h2 class="mb-4">Dashboard - Aluno</h2>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="card p-3">
+            <h6>Total de Treinos</h6>
+            <h3>@Model.TotalTreinos</h3>
+        </div>
+    </div>
+</div>
+
+<h5 class="mb-2">Meus Treinos</h5>
+@if (!Model.MeusTreinos.Any())
+{
+    <p>Você ainda não possui treinos atribuídos.</p>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Dia</th>
+                    <th>Instrutor</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var t in Model.MeusTreinos)
+                {
+                    <tr>
+                        <td>@t.Nome</td>
+                        <td>@t.DiaSemana</td>
+                        <td>@(t.Instrutor?.NomeCompleto ?? t.Instrutor?.Email ?? "—")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
