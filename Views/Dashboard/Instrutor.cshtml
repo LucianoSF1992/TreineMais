@@ -3,62 +3,113 @@
 <div class="d-flex align-items-center justify-content-between mb-4">
     <div>
         <h2 class="mb-0">Dashboard - Instrutor</h2>
-        <small class="text-muted">Seus treinos e acessos rápidos</small>
+        <small class="text-muted">Resumo dos seus alunos e treinos</small>
     </div>
     <a class="btn btn-primary" asp-controller="Admin" asp-action="CriarTreino">Criar Treino</a>
 </div>
 
 <div class="row g-3 mb-4">
-    <div class="col-md-4">
+    <div class="col-md-3">
         <div class="card shadow-sm border-0">
             <div class="card-body">
-                <div class="text-muted">Meus Treinos</div>
+                <div class="text-muted">Meus treinos</div>
                 <div class="display-6 fw-bold">@Model.TotalTreinos</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
+                <div class="text-muted">Meus alunos</div>
+                <div class="display-6 fw-bold">@Model.TotalAlunos</div>
             </div>
         </div>
     </div>
 </div>
 
-<h5 class="mb-2">Últimos treinos</h5>
+<div class="row g-4">
+    <div class="col-lg-5">
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
+                <h5 class="mb-3">Meus alunos</h5>
 
-@if (!Model.MeusTreinos.Any())
-{
-    <div class="alert alert-info">Você ainda não cadastrou treinos.</div>
-}
-else
-{
-    <div class="table-responsive">
-        <table class="table table-hover align-middle">
-            <thead>
-                <tr>
-                    <th>Treino</th>
-                    <th>Dia</th>
-                    <th>Aluno</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var t in Model.MeusTreinos)
+                @if (!Model.MeusAlunos.Any())
                 {
-                    <tr>
-                        <td class="fw-semibold">@t.Nome</td>
-                        <td>@t.DiaSemana</td>
-                        <td>@(t.Aluno?.NomeCompleto ?? t.Aluno?.Email ?? "—")</td>
-                        <td>
-                            @if (t.Concluido)
-                            {
-                                <span class="badge bg-success">Concluído</span>
-                            }
-                            else
-                            {
-                                <span class="badge bg-warning text-dark">Pendente</span>
-                            }
-                        </td>
-                    </tr>
+                    <div class="alert alert-info mb-0">Você ainda não possui alunos com treinos cadastrados.</div>
                 }
-            </tbody>
-        </table>
+                else
+                {
+                    <div class="list-group">
+                        @foreach (var a in Model.MeusAlunos)
+                        {
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="fw-semibold">@a.Nome</div>
+                                    <small class="text-muted">@a.Email</small>
+                                </div>
+                                <div class="text-end">
+                                    <span class="badge bg-primary">Treinos: @a.TreinosDoAluno</span>
+                                    <span class="badge bg-success">OK: @a.Concluidos</span>
+                                    <span class="badge bg-warning text-dark">Pend: @a.Pendentes</span>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
     </div>
 
-    <a class="btn btn-outline-primary" asp-controller="Admin" asp-action="Treinos">Ver todos meus treinos</a>
-}
+    <div class="col-lg-7">
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
+                <h5 class="mb-3">Últimos treinos</h5>
+
+                @if (!Model.UltimosTreinos.Any())
+                {
+                    <div class="alert alert-info mb-0">Você ainda não cadastrou treinos.</div>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Treino</th>
+                                    <th>Dia</th>
+                                    <th>Aluno</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var t in Model.UltimosTreinos)
+                                {
+                                    <tr>
+                                        <td class="fw-semibold">@t.Nome</td>
+                                        <td>@t.DiaSemana</td>
+                                        <td>@t.AlunoNome</td>
+                                        <td>
+                                            @if (t.Concluido)
+                                            {
+                                                <span class="badge bg-success">Concluído</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-warning text-dark">Pendente</span>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+
+                <div class="mt-3 d-flex gap-2">
+                    <a class="btn btn-outline-primary" asp-controller="Admin" asp-action="Treinos">Ver todos</a>
+                    <a class="btn btn-outline-primary" asp-controller="Admin" asp-action="CriarTreino">Criar treino</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

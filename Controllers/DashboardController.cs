@@ -54,19 +54,55 @@ namespace TreineMais.Controllers
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return Challenge();
 
-            var meusTreinos = await _context.Treinos
+            // últimos treinos (lista rápida)
+            var ultimosTreinos = await _context.Treinos
                 .Where(t => t.InstrutorId == user.Id)
                 .Include(t => t.Aluno)
                 .OrderByDescending(t => t.Id)
                 .Take(10)
+                .Select(t => new TreinoMais.ViewModels.Dashboard.TreinoResumoViewModel
+                {
+                    TreinoId = t.Id,
+                    Nome = t.Nome,
+                    DiaSemana = t.DiaSemana,
+                    AlunoNome = t.Aluno != null
+                        ? (t.Aluno.NomeCompleto ?? t.Aluno.Email ?? "—")
+                        : "—",
+                    Concluido = t.Concluido
+                })
+                .ToListAsync();
+
+            // resumo por aluno (somente alunos do instrutor)
+            var resumoAlunos = await _context.Treinos
+                .Where(t => t.InstrutorId == user.Id)
+                .Include(t => t.Aluno)
+                .GroupBy(t => new
+                {
+                    t.AlunoId,
+                    Nome = t.Aluno != null ? (t.Aluno.NomeCompleto ?? "") : "",
+                    Email = t.Aluno != null ? (t.Aluno.Email ?? "") : ""
+                })
+                .Select(g => new TreineMais.ViewModels.Dashboard.AlunoResumoViewModel
+                {
+                    AlunoId = g.Key.AlunoId,
+                    Nome = string.IsNullOrWhiteSpace(g.Key.Nome) ? "Aluno" : g.Key.Nome,
+                    Email = g.Key.Email,
+                    TreinosDoAluno = g.Count(),
+                    Concluidos = g.Count(x => x.Concluido),
+                    Pendentes = g.Count(x => !x.Concluido)
+                })
+                .OrderByDescending(x => x.TreinosDoAluno)
+                .Take(8)
                 .ToListAsync();
 
             var totalTreinos = await _context.Treinos.CountAsync(t => t.InstrutorId == user.Id);
 
-            var vm = new InstrutorDashboardViewModel
+            var vm = new TreineMais.ViewModels.Dashboard.InstrutorDashboardViewModel
             {
                 TotalTreinos = totalTreinos,
-                MeusTreinos = meusTreinos
+                TotalAlunos = resumoAlunos.Count,
+                MeusAlunos = resumoAlunos,
+                UltimosTreinos = ultimosTreinos
             };
 
             return View(vm);
