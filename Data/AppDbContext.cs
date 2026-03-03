@@ -36,6 +36,10 @@ namespace TreineMais.Data
                 .WithMany(e => e.TreinosExercicios)
                 .HasForeignKey(te => te.ExercicioId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<TreinoExercicio>()
+                .HasIndex(te => new { te.TreinoId, te.Ordem })
+                .IsUnique();
         }
     }
 }

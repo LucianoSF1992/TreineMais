@@ -7,29 +7,29 @@ namespace TreineMais.Models
     {
         public int Id { get; set; }
 
-        [Required]
-        public string Nome { get; set; } = string.Empty; // Ex: Treino A
+        [Required, MaxLength(120)]
+        public string Nome { get; set; } = string.Empty;
 
-        [Required]
+        [Required, MaxLength(30)]
         public string DiaSemana { get; set; } = string.Empty;
 
         // Relacionamento com aluno
         [Required]
         public string AlunoId { get; set; } = string.Empty;
 
-        [ForeignKey("AlunoId")]
+        [ForeignKey(nameof(AlunoId))]
         public ApplicationUser? Aluno { get; set; }
 
         // Relacionamento com instrutor
         [Required]
         public string InstrutorId { get; set; } = string.Empty;
 
-        [ForeignKey("InstrutorId")]
+        [ForeignKey(nameof(InstrutorId))]
         public ApplicationUser? Instrutor { get; set; }
 
         public bool Concluido { get; set; } = false;
 
-        // Lista de exercícios da ficha
-        public ICollection<TreinoExercicio>? TreinosExercicios { get; set; }
+        // Evita null
+        public ICollection<TreinoExercicio> TreinosExercicios { get; set; } = new List<TreinoExercicio>();
     }
 }
