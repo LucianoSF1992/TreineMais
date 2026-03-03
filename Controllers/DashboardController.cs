@@ -60,7 +60,7 @@ namespace TreineMais.Controllers
                 .Include(t => t.Aluno)
                 .OrderByDescending(t => t.Id)
                 .Take(10)
-                .Select(t => new TreineMais.ViewModels.Dashboard.TreinoResumoViewModel
+                .Select(t => new TreinoResumoViewModel
                 {
                     TreinoId = t.Id,
                     Nome = t.Nome,
@@ -82,7 +82,7 @@ namespace TreineMais.Controllers
                     Nome = t.Aluno != null ? (t.Aluno.NomeCompleto ?? "") : "",
                     Email = t.Aluno != null ? (t.Aluno.Email ?? "") : ""
                 })
-                .Select(g => new TreineMais.ViewModels.Dashboard.AlunoResumoViewModel
+                .Select(g => new AlunoResumoViewModel
                 {
                     AlunoId = g.Key.AlunoId,
                     Nome = string.IsNullOrWhiteSpace(g.Key.Nome) ? "Aluno" : g.Key.Nome,
@@ -97,12 +97,31 @@ namespace TreineMais.Controllers
 
             var totalTreinos = await _context.Treinos.CountAsync(t => t.InstrutorId == user.Id);
 
-            var vm = new TreineMais.ViewModels.Dashboard.InstrutorDashboardViewModel
+            // ✅ NOVO: status geral p/ gráfico
+            var concluidos = await _context.Treinos.CountAsync(t => t.InstrutorId == user.Id && t.Concluido);
+            var pendentes = await _context.Treinos.CountAsync(t => t.InstrutorId == user.Id && !t.Concluido);
+
+            // ✅ NOVO: treinos por dia da semana p/ gráfico
+            var porDia = await _context.Treinos
+                .Where(t => t.InstrutorId == user.Id)
+                .GroupBy(t => t.DiaSemana)
+                .Select(g => new { Dia = g.Key, Qtde = g.Count() })
+                .ToListAsync();
+
+            var treinosPorDiaSemana = porDia
+                .Where(x => !string.IsNullOrWhiteSpace(x.Dia))
+                .ToDictionary(x => x.Dia, x => x.Qtde);
+
+            var vm = new InstrutorDashboardViewModel
             {
                 TotalTreinos = totalTreinos,
                 TotalAlunos = resumoAlunos.Count,
                 MeusAlunos = resumoAlunos,
-                UltimosTreinos = ultimosTreinos
+                UltimosTreinos = ultimosTreinos,
+
+                Concluidos = concluidos,
+                Pendentes = pendentes,
+                TreinosPorDiaSemana = treinosPorDiaSemana
             };
 
             return View(vm);

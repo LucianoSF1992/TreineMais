@@ -7,6 +7,13 @@ namespace TreineMais.ViewModels.Dashboard
 
         public List<AlunoResumoViewModel> MeusAlunos { get; set; } = new();
         public List<TreinoResumoViewModel> UltimosTreinos { get; set; } = new();
+
+        // ✅ NOVO (para gráficos)
+        public int Concluidos { get; set; }
+        public int Pendentes { get; set; }
+
+        // chave = dia (string), valor = quantidade
+        public Dictionary<string, int> TreinosPorDiaSemana { get; set; } = new();
     }
 
     public class AlunoResumoViewModel
