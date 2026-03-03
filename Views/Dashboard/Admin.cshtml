@@ -1,53 +1,99 @@
 @model TreineMais.ViewModels.Dashboard.AdminDashboardViewModel
 
-<div class="d-flex align-items-center justify-content-between mb-4">
-    <div>
-        <h2 class="mb-0">Dashboard - Admin</h2>
-        <small class="text-muted">Visão geral do sistema</small>
-    </div>
-    <a class="btn btn-outline-secondary" asp-controller="Dashboard" asp-action="Index">Atualizar</a>
-</div>
+<div class="container py-4">
 
-<div class="row g-3">
-    <div class="col-md-3">
-        <div class="card shadow-sm border-0">
-            <div class="card-body">
-                <div class="text-muted">Usuários</div>
-                <div class="display-6 fw-bold">@Model.TotalUsuarios</div>
-            </div>
+    <!-- Header -->
+    <div
+        class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3 mb-4">
+        <div>
+            <h2 class="mb-1">Dashboard - Admin</h2>
+            <div class="text-muted">Visão geral do sistema</div>
         </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card shadow-sm border-0">
-            <div class="card-body">
-                <div class="text-muted">Alunos</div>
-                <div class="display-6 fw-bold">@Model.TotalAlunos</div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card shadow-sm border-0">
-            <div class="card-body">
-                <div class="text-muted">Instrutores</div>
-                <div class="display-6 fw-bold">@Model.TotalInstrutores</div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card shadow-sm border-0">
-            <div class="card-body">
-                <div class="text-muted">Treinos</div>
-                <div class="display-6 fw-bold">@Model.TotalTreinos</div>
-            </div>
-        </div>
-    </div>
-</div>
 
-<hr class="my-4" />
+        <div class="d-flex gap-2">
+            <a class="btn btn-outline-secondary" asp-controller="Dashboard" asp-action="Admin">
+                <i class="bi bi-arrow-clockwise me-1"></i> Atualizar
+            </a>
+        </div>
+    </div>
 
-<div class="d-flex flex-wrap gap-2">
-    <a class="btn btn-primary" asp-controller="Admin" asp-action="Alunos">Gerenciar Alunos</a>
-    <a class="btn btn-outline-primary" asp-controller="Admin" asp-action="CriarAluno">Criar Aluno</a>
-    <a class="btn btn-outline-primary" asp-controller="Admin" asp-action="Treinos">Treinos</a>
-    <a class="btn btn-outline-primary" asp-controller="Admin" asp-action="CriarTreino">Criar Treino</a>
+    <!-- Cards -->
+    <div class="row g-3">
+        <div class="col-12 col-sm-6 col-lg-3">
+            <div class="card shadow-sm h-100 border-0">
+                <div class="card-body">
+                    <div class="text-muted small">Usuários</div>
+                    <div class="display-6 fw-bold">@Model.TotalUsuarios</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-lg-3">
+            <div class="card shadow-sm h-100 border-0">
+                <div class="card-body">
+                    <div class="text-muted small">Alunos</div>
+                    <div class="display-6 fw-bold">@Model.TotalAlunos</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-lg-3">
+            <div class="card shadow-sm h-100 border-0">
+                <div class="card-body">
+                    <div class="text-muted small">Instrutores</div>
+                    <div class="display-6 fw-bold">@Model.TotalInstrutores</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-lg-3">
+            <div class="card shadow-sm h-100 border-0">
+                <div class="card-body">
+                    <div class="text-muted small">Treinos</div>
+                    <div class="display-6 fw-bold">@Model.TotalTreinos</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section divider -->
+    <hr class="my-4" />
+
+    <!-- Ações rápidas -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-body">
+            <div
+                class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-2 mb-3">
+                <h5 class="mb-0">Ações rápidas</h5>
+                <span class="text-muted small">Atalhos para tarefas frequentes</span>
+            </div>
+
+            <div class="row g-2">
+                <div class="col-12 col-md-6 col-lg-3">
+                    <a class="btn btn-primary w-100" asp-controller="Admin" asp-action="Alunos">
+                        Gerenciar Alunos
+                    </a>
+                </div>
+
+                <div class="col-12 col-md-6 col-lg-3">
+                    <a class="btn btn-outline-primary w-100" asp-controller="Admin" asp-action="CriarAluno">
+                        Criar Aluno
+                    </a>
+                </div>
+
+                <div class="col-12 col-md-6 col-lg-3">
+                    <a class="btn btn-outline-primary w-100" asp-controller="Admin" asp-action="Treinos">
+                        Treinos
+                    </a>
+                </div>
+
+                <div class="col-12 col-md-6 col-lg-3">
+                    <a class="btn btn-outline-primary w-100" asp-controller="Admin" asp-action="CriarTreino">
+                        Criar Treino
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
