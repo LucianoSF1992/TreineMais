@@ -42,29 +42,39 @@ else
                             }
                         </td>
                         <td class="text-end">
-                            @if (!t.Concluido)
-                            {
-                                <form asp-controller="Treinos" asp-action="ConcluirInstrutor" method="post" class="d-inline">
-                                    @Html.AntiForgeryToken()
-                                    <input type="hidden" name="id" value="@t.Id" />
-                                    <button class="btn btn-sm btn-success" type="submit">Concluir</button>
-                                </form>
-                            }
-                            else
-                            {
-                                <form asp-controller="Treinos" asp-action="ReabrirInstrutor" method="post" class="d-inline">
-                                    @Html.AntiForgeryToken()
-                                    <input type="hidden" name="id" value="@t.Id" />
-                                    <button class="btn btn-sm btn-outline-secondary" type="submit">Reabrir</button>
-                                </form>
-                            }
+                            <div class="d-inline-flex gap-1 flex-wrap justify-content-end">
 
-                            <form asp-controller="Treinos" asp-action="ExcluirInstrutor" method="post" class="d-inline"
-                                  onsubmit="return confirm('Excluir este treino?');">
-                                @Html.AntiForgeryToken()
-                                <input type="hidden" name="id" value="@t.Id" />
-                                <button class="btn btn-sm btn-outline-danger" type="submit">Excluir</button>
-                            </form>
+                                <!-- ✅ NOVO: Detalhe do treino (exercícios) -->
+                                <a class="btn btn-sm btn-outline-primary"                             asp-controller="Treinos"                              asp-action="Detalhe"
+                                       asp-route-id="@t.Id">
+                                    Detalhe
+                                </a>
+
+                                @if (!t.Concluido)
+                                {
+                                    <form asp-controller="Treinos" asp-action="ConcluirInstrutor" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@t.Id" />
+                                        <button class="btn btn-sm btn-success" type="submit">Concluir</button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <form asp-controller="Treinos" asp-action="ReabrirInstrutor" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@t.Id" />
+                                        <button class="btn btn-sm btn-outline-secondary" type="submit">Reabrir</button>
+                                    </form>
+                                }
+
+                                <form asp-controller="Treinos" asp-action="ExcluirInstrutor" method="post" class="d-inline"
+                                      onsubmit="return confirm('Excluir este treino?');">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@t.Id" />
+                                    <button class="btn btn-sm btn-outline-danger" type="submit">Excluir</button>
+                                </form>
+
+                            </div>
                         </td>
                     </tr>
                 }
