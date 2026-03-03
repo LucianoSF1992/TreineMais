@@ -13,7 +13,7 @@ namespace TreineMais.Data
 
         public DbSet<Treino> Treinos { get; set; }
         public DbSet<Exercicio> Exercicios { get; set; }
-        public DbSet<TreinoExercicio> TreinosExercicios { get; set; }
+        public DbSet<TreinoExercicio> TreinoExercicios { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

@@ -1,0 +1,122 @@
+@model TreineMais.ViewModels.Treinos.TreinoDetalheViewModel
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h2 class="mb-0">@Model.NomeTreino</h2>
+        <small class="text-muted">@Model.DiaSemana • @Model.AlunoNome (@Model.AlunoEmail)</small>
+    </div>
+    <a class="btn btn-outline-secondary" href="javascript:history.back()">Voltar</a>
+</div>
+
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-body">
+        <h5 class="mb-3">Adicionar exercício</h5>
+
+        <form asp-controller="Treinos" asp-action="AdicionarExercicio" method="post" class="row g-2">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="TreinoId" />
+
+            <div class="col-md-5">
+                <label class="form-label">Exercício</label>
+                <select class="form-select" asp-for="ExercicioId" asp-items="Model.ExerciciosDisponiveis">
+                    <option value="0">Selecione...</option>
+                </select>
+                <span class="text-danger" asp-validation-for="ExercicioId"></span>
+            </div>
+
+            <div class="col-md-1">
+                <label class="form-label">Ordem</label>
+                <input class="form-control" asp-for="Ordem" type="number" min="0" />
+                <span class="text-danger" asp-validation-for="Ordem"></span>
+            </div>
+
+            <div class="col-md-2">
+                <label class="form-label">Séries</label>
+                <input class="form-control" asp-for="Series" type="number" min="0" />
+                <span class="text-danger" asp-validation-for="Series"></span>
+            </div>
+
+            <div class="col-md-2">
+                <label class="form-label">Repetições</label>
+                <input class="form-control" asp-for="Repeticoes" type="number" min="0" />
+                <span class="text-danger" asp-validation-for="Repeticoes"></span>
+            </div>
+
+            <div class="col-md-2">
+                <label class="form-label">Descanso (s)</label>
+                <input class="form-control" asp-for="Descanso" type="number" min="0" />
+                <span class="text-danger" asp-validation-for="Descanso"></span>
+            </div>
+
+            <div class="col-md-10">
+                <label class="form-label">Observações</label>
+                <input class="form-control" asp-for="Observacoes" placeholder="Ex: descanso 60s, cadência controlada..." />
+                <span class="text-danger" asp-validation-for="Observacoes"></span>
+            </div>
+
+            <div class="col-md-2 d-flex align-items-end">
+                <button class="btn btn-primary w-100" type="submit">Adicionar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card shadow-sm border-0">
+    <div class="card-body">
+        <h5 class="mb-3">Exercícios do treino</h5>
+
+        @if (!Model.ExerciciosDoTreino.Any())
+        {
+            <div class="alert alert-info mb-0">Nenhum exercício cadastrado ainda.</div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th>Ordem</th>
+                            <th>Exercício</th>
+                            <th>Séries</th>
+                            <th>Reps</th>
+                            <th>Descanso</th>
+                            <th>Obs</th>
+                            <th class="text-end">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.ExerciciosDoTreino.OrderBy(x => x.Ordem).ThenBy(x => x.Id))
+                        {
+                            <tr>
+                                <td class="fw-semibold">@item.Ordem</td>
+                                <td>
+                                    <div class="fw-semibold">@item.Exercicio?.Nome</div>
+                                    @if (!string.IsNullOrWhiteSpace(item.Exercicio?.GrupoMuscular))
+                                    {
+                                        <small class="text-muted">@item.Exercicio?.GrupoMuscular</small>
+                                    }
+                                </td>
+                                <td>@item.Series</td>
+                                <td>@item.Repeticoes</td>
+                                <td>@item.Descanso s</td>
+                                <td>@(string.IsNullOrWhiteSpace(item.Observacoes) ? "—" : item.Observacoes)</td>
+                                <td class="text-end">
+                                    <form asp-controller="Treinos" asp-action="RemoverExercicio" method="post"
+                                          class="d-inline" onsubmit="return confirm('Remover este exercício?');">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@item.Id" />
+                                        <button class="btn btn-sm btn-outline-danger" type="submit">Remover</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
