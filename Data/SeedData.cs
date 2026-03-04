@@ -31,7 +31,8 @@ namespace TreineMais.Data
                 {
                     UserName = adminEmail,
                     Email = adminEmail,
-                    EmailConfirmed = true
+                    EmailConfirmed = true,
+                    TipoUsuario = "Admin"
                 };
 
                 var result = await userManager.CreateAsync(admin, "Admin123!");
@@ -51,7 +52,8 @@ namespace TreineMais.Data
                 {
                     UserName = instrutorEmail,
                     Email = instrutorEmail,
-                    EmailConfirmed = true
+                    EmailConfirmed = true,
+                    TipoUsuario = "Instrutor"
                 };
 
                 var result = await userManager.CreateAsync(instrutor, "Instrutor123!");
