@@ -32,7 +32,6 @@ namespace TreineMais.Controllers
 
         // ===================== ALUNO =====================
 
-        // ✅ Aluno pode marcar como concluído SOMENTE o treino dele
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Aluno")]
@@ -44,7 +43,6 @@ namespace TreineMais.Controllers
             var treino = await _context.Treinos.FirstOrDefaultAsync(t => t.Id == id);
             if (treino == null) return NotFound();
 
-            // segurança: só o dono do treino
             if (treino.AlunoId != user.Id)
                 return Forbid();
 
@@ -54,7 +52,6 @@ namespace TreineMais.Controllers
             return RedirectToAction("Aluno", "Dashboard");
         }
 
-        // ✅ opcional: permitir "desmarcar"
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Aluno")]
@@ -77,7 +74,6 @@ namespace TreineMais.Controllers
 
         // ===================== INSTRUTOR =====================
 
-        // ✅ Instrutor vê treinos de um aluno (apenas os treinos dele)
         [Authorize(Roles = "Instrutor")]
         public async Task<IActionResult> DoAluno(string alunoId)
         {
@@ -87,8 +83,12 @@ namespace TreineMais.Controllers
             if (string.IsNullOrWhiteSpace(alunoId))
                 return BadRequest();
 
-            var aluno = await _context.Users.FirstOrDefaultAsync(u => u.Id == alunoId && u.TipoUsuario == "Aluno");
+            var aluno = await _userManager.FindByIdAsync(alunoId);
             if (aluno == null) return NotFound();
+
+            // ✅ valida por Role, sem TipoUsuario
+            var isAluno = await _userManager.IsInRoleAsync(aluno, "Aluno");
+            if (!isAluno) return NotFound();
 
             var treinos = await _context.Treinos
                 .Where(t => t.InstrutorId == user.Id && t.AlunoId == alunoId)
@@ -106,7 +106,6 @@ namespace TreineMais.Controllers
             return View(vm);
         }
 
-        // ✅ Detalhe do treino (ficha) + lista de exercícios (ordenado por Ordem)
         [Authorize(Roles = "Instrutor")]
         public async Task<IActionResult> Detalhe(int id)
         {
@@ -121,7 +120,6 @@ namespace TreineMais.Controllers
 
             if (treino == null) return NotFound();
 
-            // segurança: instrutor só pode ver treinos dele
             if (treino.InstrutorId != user.Id)
                 return Forbid();
 
@@ -151,7 +149,6 @@ namespace TreineMais.Controllers
             return View(vm);
         }
 
-        // ✅ Adicionar exercício no treino (usando ExercicioId)
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Instrutor")]
@@ -192,14 +189,12 @@ namespace TreineMais.Controllers
             }
             catch (DbUpdateException)
             {
-                // provável conflito do índice único (TreinoId, Ordem)
                 TempData["Erro"] = "Já existe um exercício com essa ordem nesse treino. Altere a ordem e tente novamente.";
             }
 
             return RedirectToAction(nameof(Detalhe), new { id = model.TreinoId });
         }
 
-        // ✅ Remover um exercício do treino (TreinoExercicio)
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Instrutor")]
@@ -223,7 +218,6 @@ namespace TreineMais.Controllers
             return RedirectToAction(nameof(Detalhe), new { id = te.TreinoId });
         }
 
-        // ✅ Instrutor pode concluir/reabrir treinos que ele criou
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Instrutor")]
@@ -264,7 +258,6 @@ namespace TreineMais.Controllers
             return RedirectBackOr("Instrutor", "Dashboard");
         }
 
-        // ✅ Instrutor pode excluir treino que ele criou
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Instrutor")]

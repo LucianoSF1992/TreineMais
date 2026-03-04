@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using TreineMais.Data;
 using TreineMais.Models;
 using TreineMais.ViewModels;
-using Microsoft.EntityFrameworkCore;
 
 namespace TreineMais.Controllers
 {
@@ -20,13 +20,12 @@ namespace TreineMais.Controllers
             _context = context;
         }
 
+        // ===================== ALUNOS =====================
+
         public async Task<IActionResult> Alunos()
         {
-            var alunos = await _context.Users
-                .Where(u => u.TipoUsuario == "Aluno")
-                .ToListAsync();
-
-            return View(alunos);
+            var alunos = await _userManager.GetUsersInRoleAsync("Aluno");
+            return View(alunos.ToList());
         }
 
         public IActionResult CriarAluno()
@@ -43,7 +42,6 @@ namespace TreineMais.Controllers
 
             var email = model.Email?.Trim();
 
-            // validações básicas (com retorno cedo => sem warnings)
             if (string.IsNullOrWhiteSpace(email))
             {
                 ModelState.AddModelError(nameof(model.Email), "E-mail é obrigatório.");
@@ -56,7 +54,6 @@ namespace TreineMais.Controllers
                 return View(model);
             }
 
-            // evita duplicar e-mail
             var existing = await _userManager.FindByEmailAsync(email);
             if (existing != null)
             {
@@ -71,7 +68,6 @@ namespace TreineMais.Controllers
                 NomeCompleto = model.NomeCompleto,
                 Idade = model.Idade,
                 Objetivo = model.Objetivo,
-                TipoUsuario = "Aluno",
                 EmailConfirmed = true
             };
 
@@ -79,6 +75,7 @@ namespace TreineMais.Controllers
 
             if (result.Succeeded)
             {
+                // ✅ fonte de verdade = Role
                 await _userManager.AddToRoleAsync(novoAluno, "Aluno");
                 return RedirectToAction(nameof(Alunos));
             }
@@ -104,16 +101,16 @@ namespace TreineMais.Controllers
             return RedirectToAction(nameof(Alunos));
         }
 
+        // ===================== TREINOS (INSTRUTOR) =====================
+
+        [Authorize(Roles = "Instrutor")]
         public async Task<IActionResult> Treinos()
         {
             var user = await _userManager.GetUserAsync(User);
-            if (user == null) return Challenge(); // força login se algo estiver errado
+            if (user == null) return Challenge();
 
-            var alunos = await _context.Users
-                .Where(u => u.TipoUsuario == "Aluno")
-                .ToListAsync();
-
-            ViewBag.Alunos = alunos;
+            var alunos = await _userManager.GetUsersInRoleAsync("Aluno");
+            ViewBag.Alunos = alunos.ToList();
 
             var treinos = await _context.Treinos
                 .Where(t => t.InstrutorId == user.Id)
@@ -123,15 +120,14 @@ namespace TreineMais.Controllers
             return View(treinos);
         }
 
+        [Authorize(Roles = "Instrutor")]
         public async Task<IActionResult> CriarTreino()
         {
-            var alunos = await _context.Users
-                .Where(u => u.TipoUsuario == "Aluno")
-                .ToListAsync();
+            var alunos = await _userManager.GetUsersInRoleAsync("Aluno");
 
             var viewModel = new CriarTreinoViewModel
             {
-                Alunos = alunos
+                Alunos = alunos.ToList()
             };
 
             return View(viewModel);
@@ -139,6 +135,7 @@ namespace TreineMais.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Instrutor")]
         public async Task<IActionResult> CriarTreino(CriarTreinoViewModel model)
         {
             var user = await _userManager.GetUserAsync(User);
@@ -146,10 +143,18 @@ namespace TreineMais.Controllers
 
             if (!ModelState.IsValid)
             {
-                model.Alunos = await _context.Users
-                    .Where(u => u.TipoUsuario == "Aluno")
-                    .ToListAsync();
+                var alunos = await _userManager.GetUsersInRoleAsync("Aluno");
+                model.Alunos = alunos.ToList();
+                return View(model);
+            }
 
+            // (Opcional) valida se o alunoId pertence mesmo a um usuário na role Aluno
+            var aluno = await _userManager.FindByIdAsync(model.AlunoId);
+            if (aluno == null || !await _userManager.IsInRoleAsync(aluno, "Aluno"))
+            {
+                ModelState.AddModelError(nameof(model.AlunoId), "Selecione um aluno válido.");
+                var alunos = await _userManager.GetUsersInRoleAsync("Aluno");
+                model.Alunos = alunos.ToList();
                 return View(model);
             }
 
