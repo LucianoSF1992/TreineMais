@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using TreineMais.Data;
 using TreineMais.Models;
 using TreineMais.ViewModels;
+using TreineMais.ViewModels.Instrutores;
 
 namespace TreineMais.Controllers
 {
@@ -170,6 +171,102 @@ namespace TreineMais.Controllers
             await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Treinos));
+        }
+
+        // ===================== INSTRUTORES (ADMIN) =====================
+
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Instrutores()
+        {
+            // pega somente usuários que estão na role Instrutor
+            var instrutores = await _userManager.GetUsersInRoleAsync("Instrutor");
+            return View(instrutores.OrderBy(x => x.Email).ToList());
+        }
+
+        [Authorize(Roles = "Admin")]
+        public IActionResult CriarInstrutor()
+        {
+            return View(new CriarInstrutorViewModel());
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> CriarInstrutor(CriarInstrutorViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var email = model.Email.Trim().ToLower();
+
+            var existing = await _userManager.FindByEmailAsync(email);
+            if (existing != null)
+            {
+                ModelState.AddModelError(nameof(model.Email), "Já existe um usuário com este e-mail.");
+                return View(model);
+            }
+
+            var novoInstrutor = new ApplicationUser
+            {
+                UserName = email,
+                Email = email,
+                NomeCompleto = string.IsNullOrWhiteSpace(model.NomeCompleto) ? null : model.NomeCompleto.Trim(),
+
+                // ✅ mantém consistência com seus contadores do dashboard
+                TipoUsuario = "Instrutor",
+
+                EmailConfirmed = true
+            };
+
+            var result = await _userManager.CreateAsync(novoInstrutor, model.Senha);
+
+            if (result.Succeeded)
+            {
+                await _userManager.AddToRoleAsync(novoInstrutor, "Instrutor");
+                TempData["Sucesso"] = "Instrutor criado com sucesso!";
+                return RedirectToAction(nameof(Instrutores));
+            }
+
+            foreach (var error in result.Errors)
+                ModelState.AddModelError(string.Empty, error.Description);
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> ExcluirInstrutor(string id)
+        {
+            if (string.IsNullOrWhiteSpace(id))
+                return RedirectToAction(nameof(Instrutores));
+
+            var instrutor = await _userManager.FindByIdAsync(id);
+            if (instrutor == null)
+                return RedirectToAction(nameof(Instrutores));
+
+            // proteção: não permitir excluir o próprio admin logado por acidente
+            var userLogado = await _userManager.GetUserAsync(User);
+            if (userLogado != null && instrutor.Id == userLogado.Id)
+            {
+                TempData["Erro"] = "Você não pode excluir o próprio usuário logado.";
+                return RedirectToAction(nameof(Instrutores));
+            }
+
+            // opcional: bloqueia exclusão de Admin (se um admin estiver também em instrutor)
+            if (await _userManager.IsInRoleAsync(instrutor, "Admin"))
+            {
+                TempData["Erro"] = "Não é permitido excluir um usuário Admin.";
+                return RedirectToAction(nameof(Instrutores));
+            }
+
+            var result = await _userManager.DeleteAsync(instrutor);
+
+            TempData["Sucesso"] = result.Succeeded
+                ? "Instrutor excluído com sucesso!"
+                : "Não foi possível excluir o instrutor.";
+
+            return RedirectToAction(nameof(Instrutores));
         }
     }
 }

@@ -1,57 +1,92 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.DependencyInjection;
 using TreineMais.Models;
 
-namespace TreineMais.Data;
-
-public static class IdentitySeed
+namespace TreineMais.Data
 {
-    public static async Task SeedAsync(IServiceProvider services)
+    public static class IdentitySeed
     {
-        using var scope = services.CreateScope();
-
-        var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-
-        string[] roles = ["Admin", "Instrutor", "Aluno"];
-
-        foreach (var role in roles)
+        public static async Task SeedAsync(IServiceProvider services)
         {
-            if (!await roleManager.RoleExistsAsync(role))
-                await roleManager.CreateAsync(new IdentityRole(role));
-        }
+            using var scope = services.CreateScope();
 
-        await EnsureUserWithRoleAsync(userManager, "admin@treinemais.com", "Admin@12345", "Admin");
-        await EnsureUserWithRoleAsync(userManager, "instrutor@treinemais.com", "Instrutor@12345", "Instrutor");
-        await EnsureUserWithRoleAsync(userManager, "aluno@treinemais.com", "Aluno@12345", "Aluno");
-    }
+            var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
-    private static async Task EnsureUserWithRoleAsync(
-        UserManager<ApplicationUser> userManager,
-        string email,
-        string password,
-        string role)
-    {
-        var user = await userManager.FindByEmailAsync(email);
-
-        if (user is null)
-        {
-            user = new ApplicationUser
+            // Roles
+            var roles = new[] { "Admin", "Instrutor", "Aluno" };
+            foreach (var role in roles)
             {
-                UserName = email,
-                Email = email,
-                EmailConfirmed = true
-            };
+                if (!await roleManager.RoleExistsAsync(role))
+                    await roleManager.CreateAsync(new IdentityRole(role));
+            }
 
-            var createResult = await userManager.CreateAsync(user, password);
-            if (!createResult.Succeeded)
-                throw new Exception($"Falha ao criar {email}: {string.Join(" | ", createResult.Errors.Select(e => e.Description))}");
+            // Admin
+            await EnsureUserAsync(
+                userManager,
+                email: "admin@treinemais.com",
+                password: "Admin@123",
+                role: "Admin",
+                tipoUsuario: "Admin"
+            );
+
+            // Instrutor
+            await EnsureUserAsync(
+                userManager,
+                email: "instrutor@treinemais.com",
+                password: "Instrutor@123",
+                role: "Instrutor",
+                tipoUsuario: "Instrutor"
+            );
+
+            // Aluno
+            await EnsureUserAsync(
+                userManager,
+                email: "aluno@treinemais.com",
+                password: "Aluno@123",
+                role: "Aluno",
+                tipoUsuario: "Aluno"
+            );
         }
 
-        if (!await userManager.IsInRoleAsync(user, role))
+        private static async Task EnsureUserAsync(
+            UserManager<ApplicationUser> userManager,
+            string email,
+            string password,
+            string role,
+            string tipoUsuario)
         {
-            var addRoleResult = await userManager.AddToRoleAsync(user, role);
-            if (!addRoleResult.Succeeded)
-                throw new Exception($"Falha ao adicionar role {role} em {email}: {string.Join(" | ", addRoleResult.Errors.Select(e => e.Description))}");
+            var user = await userManager.FindByEmailAsync(email);
+
+            if (user == null)
+            {
+                user = new ApplicationUser
+                {
+                    UserName = email,
+                    Email = email,
+                    EmailConfirmed = true,
+                    TipoUsuario = tipoUsuario
+                };
+
+                var create = await userManager.CreateAsync(user, password);
+                if (!create.Succeeded)
+                {
+                    var errors = string.Join(" | ", create.Errors.Select(e => e.Description));
+                    throw new Exception($"Falha ao criar usuário {email}: {errors}");
+                }
+            }
+            else
+            {
+                // mantém consistência do TipoUsuario no banco (caso tenha sido criado antes como null)
+                if (string.IsNullOrWhiteSpace(user.TipoUsuario))
+                {
+                    user.TipoUsuario = tipoUsuario;
+                    await userManager.UpdateAsync(user);
+                }
+            }
+
+            if (!await userManager.IsInRoleAsync(user, role))
+                await userManager.AddToRoleAsync(user, role);
         }
     }
 }
