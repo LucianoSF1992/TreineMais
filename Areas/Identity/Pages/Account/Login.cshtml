@@ -95,6 +95,12 @@
                                             Entrar <i class="bi bi-arrow-right ms-1"></i>
                                         </button>
 
+                                        <div class="mt-3">
+                                            <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">
+                                                ← Voltar
+                                            </a>
+                                        </div>
+
                                         <div class="divider">ou</div>
 
                                         <div class="text-center small-muted">
@@ -118,31 +124,31 @@
     <partial name="_ValidationScriptsPartial" />
 
     <script>
-            // Bootstrap validation
-            (() => {
-                'use strict'
-                const forms = document.querySelectorAll('.needs-validation')
-                Array.from(forms).forEach(form => {
-                    form.addEventListener('submit', event => {
-                        if (!form.checkValidity()) {
-                            event.preventDefault()
-                            event.stopPropagation()
-                        }
-                        form.classList.add('was-validated')
-                    }, false)
-                })
-            })()
+                // Bootstrap validation
+                (() => {
+                    'use strict'
+                    const forms = document.querySelectorAll('.needs-validation')
+                    Array.from(forms).forEach(form => {
+                        form.addEventListener('submit', event => {
+                            if (!form.checkValidity()) {
+                                event.preventDefault()
+                                event.stopPropagation()
+                            }
+                            form.classList.add('was-validated')
+                        }, false)
+                    })
+                })()
 
-            // Show/hide password
-            const pwd = document.getElementById('loginPassword');
-            const btn = document.getElementById('toggleLoginPassword');
+                // Show/hide password
+                const pwd = document.getElementById('loginPassword');
+                const btn = document.getElementById('toggleLoginPassword');
 
-            if (pwd && btn) {
-                btn.addEventListener('click', () => {
-                    const isPass = pwd.type === 'password';
-                    pwd.type = isPass ? 'text' : 'password';
-                    btn.innerHTML = isPass ? '<i class="bi bi-eye-slash"></i>' : '<i class="bi bi-eye"></i>';
-                });
-            }
+                if (pwd && btn) {
+                    btn.addEventListener('click', () => {
+                        const isPass = pwd.type === 'password';
+                        pwd.type = isPass ? 'text' : 'password';
+                        btn.innerHTML = isPass ? '<i class="bi bi-eye-slash"></i>' : '<i class="bi bi-eye"></i>';
+                    });
+                }
     </script>
 }

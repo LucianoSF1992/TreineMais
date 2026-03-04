@@ -1,6 +1,9 @@
 @model TreineMais.Models.ApplicationUser
 
 <div class="container mt-4">
+    <a asp-controller="Admin" asp-action="Alunos" class="btn btn-outline-secondary mb-3">
+        ← Voltar
+    </a>
     <h2>Novo Aluno</h2>
 
     <form asp-action="CriarAluno" method="post">
