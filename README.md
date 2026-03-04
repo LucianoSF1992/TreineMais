@@ -60,21 +60,42 @@ Pode:
 
 ---
 
-# 🔐 Usuários de Teste
+## 🔐 Usuários de Teste
 
-### Instrutor
+Para facilitar a avaliação do sistema, foram criados três perfis de usuário:
 
-Email
+### 👑 Admin
+
+Responsável pela visão administrativa do sistema.
+
+Email  
 admin@treinemais.com
-Senha
+
+Senha  
 Admin@123
+
 ---
 
-### Aluno
+### 👨‍🏫 Instrutor
 
-Email
+Pode cadastrar alunos e criar treinos personalizados.
+
+Email  
+instrutor@treinemais.com
+
+Senha  
+Instrutor@123
+
+---
+
+### 👨‍🎓 Aluno
+
+Pode visualizar seus treinos e marcar exercícios como concluídos.
+
+Email  
 aluno@treinemais.com
-Senha
+
+Senha  
 Aluno@123
 
 ---
