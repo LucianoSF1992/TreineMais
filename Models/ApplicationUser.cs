@@ -7,8 +7,5 @@ namespace TreineMais.Models
         public string? NomeCompleto { get; set; }
         public int? Idade { get; set; }
         public string? Objetivo { get; set; }
-
-        // Instrutor ou Aluno
-        public string? TipoUsuario { get; set; }
     }
 }

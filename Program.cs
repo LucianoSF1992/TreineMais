@@ -84,4 +84,6 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
+await IdentitySeed.SeedAsync(app.Services);
+
 app.Run();

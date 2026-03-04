@@ -37,11 +37,16 @@ namespace TreineMais.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Admin()
         {
+            var totalUsuarios = await _context.Users.CountAsync();
+
+            var alunos = await _userManager.GetUsersInRoleAsync("Aluno");
+            var instrutores = await _userManager.GetUsersInRoleAsync("Instrutor");
+
             var vm = new AdminDashboardViewModel
             {
-                TotalUsuarios = await _context.Users.CountAsync(),
-                TotalAlunos = await _context.Users.CountAsync(u => u.TipoUsuario == "Aluno"),
-                TotalInstrutores = await _context.Users.CountAsync(u => u.TipoUsuario == "Instrutor"),
+                TotalUsuarios = totalUsuarios,
+                TotalAlunos = alunos.Count,
+                TotalInstrutores = instrutores.Count,
                 TotalTreinos = await _context.Treinos.CountAsync()
             };
 

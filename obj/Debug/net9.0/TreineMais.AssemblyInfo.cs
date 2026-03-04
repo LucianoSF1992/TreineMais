@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("TreineMais")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e703b188d46e09c96f5f35049084dd0853ca9f91")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+60b6f06d663ed8ab2de9d8a3d256bc9f281e064f")]
 [assembly: System.Reflection.AssemblyProductAttribute("TreineMais")]
 [assembly: System.Reflection.AssemblyTitleAttribute("TreineMais")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
