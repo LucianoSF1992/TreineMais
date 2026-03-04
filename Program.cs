@@ -29,7 +29,6 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.LoginPath = "/Identity/Account/Login";
     options.AccessDeniedPath = "/Identity/Account/AccessDenied";
 
-    // ✅ Mais correto do que OnRedirectToReturnUrl
     options.Events.OnRedirectToLogin = context =>
     {
         context.Response.Redirect(options.LoginPath);
@@ -67,7 +66,7 @@ app.MapControllerRoute(
 
 app.MapRazorPages();
 
-// ✅ SeedData com proteção (não derruba app se banco falhar no deploy)
+// ✅ Seed Identity (Roles + usuários de teste) com proteção
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -75,15 +74,13 @@ using (var scope = app.Services.CreateScope())
 
     try
     {
-        await SeedData.Inicializar(services);
+        await IdentitySeed.SeedAsync(services);
     }
     catch (Exception ex)
     {
-        logger.LogError(ex, "Erro ao executar SeedData (startup)");
-        // Não dá throw pra não matar o app em produção
+        logger.LogError(ex, "Erro ao executar IdentitySeed (startup)");
+        // não dá throw pra não matar o app em produção
     }
 }
-
-await IdentitySeed.SeedAsync(app.Services);
 
 app.Run();
