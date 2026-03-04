@@ -1,0 +1,26 @@
+@page
+@model TreineMais.Areas.Identity.Pages.Account.AccessDeniedModel
+@{
+    ViewData["Title"] = "Acesso negado";
+}
+<div class="container mt-5 text-center">
+
+    <h1 class="text-danger">Acesso negado</h1>
+
+    <p class="mt-3">
+        Você não tem permissão para acessar esta página.
+    </p>
+
+    <div class="mt-4">
+
+        <a asp-controller="Dashboard" asp-action="Index" class="btn btn-primary me-2">
+            Voltar para o Dashboard
+        </a>
+
+        <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary">
+            Ir para Home
+        </a>
+
+    </div>
+
+</div>
