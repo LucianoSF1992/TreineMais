@@ -17,16 +17,6 @@ html {
   box-shadow: 0 0 0 0.1rem #ffffff, 0 0 0 0.25rem #258cfb;
 }
 
-html {
-  position: relative;
-  min-height: 100%;
-}
-
-/* Espaço para footer fixo */
-body {
-  margin-bottom: 60px;
-}
-
 /* Ajustes form-floating */
 .form-floating>.form-control-plaintext::placeholder,
 .form-floating>.form-control::placeholder {
