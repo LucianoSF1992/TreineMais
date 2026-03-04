@@ -91,6 +91,7 @@ Aluno@123
 
 # 🗂 Estrutura do Projeto
 
+```text
 TreineMais
 │
 ├── Controllers
@@ -125,7 +126,7 @@ TreineMais
 ├── Properties
 │
 └── Program.cs
-
+```
 
 ---
 
