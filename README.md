@@ -2,79 +2,221 @@
 
 Sistema web para academias e personal trainers gerenciarem treinos personalizados de alunos.
 
-Projeto desenvolvido como MVP utilizando:
+Projeto desenvolvido como **MVP (Minimum Viable Product)** utilizando **ASP.NET Core MVC** e **SQL Server**, com autenticação baseada em **Identity**.
+
+🌐 Sistema online:  
+https://treinemais.lucianoferreiradev.com
+
+---
+
+# 🚀 Tecnologias Utilizadas
 
 - .NET 9
 - ASP.NET Core MVC
 - Entity Framework Core
 - SQL Server
-- Identity para autenticação
-- Bootstrap (layout responsivo)
+- ASP.NET Identity
+- Bootstrap 5
+- Razor Views
 
 ---
 
-## 🎯 Objetivo do Projeto
+# 🎯 Objetivo do Projeto
 
-Permitir que instrutores:
+Permitir que **instrutores** criem e gerenciem treinos personalizados para seus alunos, enquanto os **alunos acompanham seus treinos e marcam exercícios como concluídos.**
 
-- Cadastrem alunos
-- Criem treinos personalizados por dia da semana
-- Acompanhem execução dos treinos
+O projeto foi desenvolvido com foco em:
 
-Permitir que alunos:
-
-- Visualizem seus treinos
-- Marquem exercícios como concluídos
-- Acompanhem progresso diário
+- arquitetura simples
+- autenticação segura
+- fluxo claro de usuário
+- base preparada para evolução futura
 
 ---
 
-## 👥 Perfis de Usuário
+# 👥 Perfis de Usuário
 
-### 👨‍🏫 Instrutor
-- Cadastro de alunos
-- Criação e edição de treinos
-- Visualização administrativa
+## 👨‍🏫 Instrutor
 
-### 👨‍🎓 Aluno
-- Visualização dos próprios treinos
-- Marcação de exercícios como concluídos
+Pode:
 
----
+- cadastrar alunos
+- criar treinos
+- atribuir treinos por dia da semana
+- gerenciar alunos
 
-## 🔐 Usuários de Teste
+## 👨‍🎓 Aluno
 
-Instrutor:
-admin@academia.com  
-Senha: Admin@123
+Pode:
 
-Aluno:
-aluno@academia.com  
-Senha: Aluno@123
+- visualizar seus treinos
+- acompanhar progresso
+- marcar treinos como concluídos
 
 ---
 
-## 🧱 Estrutura do MVP
+# 🔐 Usuários de Teste
 
-- Login com diferenciação de perfil
-- Painel do instrutor
-- Cadastro de alunos
-- Cadastro de treinos por dia
-- Tela do aluno com controle de conclusão
-- Layout responsivo
+### Instrutor
+
+Email
+admin@treinemais.com
+Senha
+Admin@123
+---
+
+### Aluno
+
+Email
+aluno@treinemais.com
+Senha
+Aluno@123
 
 ---
 
-## 🚀 Próximas Evoluções
+# 🧱 Funcionalidades do MVP
+
+✔ Login com autenticação via Identity  
+✔ Diferenciação de perfil (Instrutor / Aluno)  
+✔ Dashboard do instrutor  
+✔ Dashboard do aluno  
+✔ Cadastro de alunos  
+✔ Criação de treinos  
+✔ Cadastro de exercícios  
+✔ Visualização de treinos do aluno  
+✔ Marcação de treino concluído  
+✔ Layout responsivo  
+
+---
+
+# 🗂 Estrutura do Projeto
+
+TreineMais
+│
+├── Controllers
+│ ├── AdminController.cs
+│ ├── DashboardController.cs
+│ ├── ExerciciosController.cs
+│ ├── HomeController.cs
+│ ├── RedirectController.cs
+│ └── TreinosController.cs
+│
+├── Data
+│ ├── AppDbContext.cs
+│ ├── IdentitySeed.cs
+│ └── Migrations
+│
+├── Models
+│ ├── ApplicationUser.cs
+│ ├── ErrorViewModel.cs
+│ ├── Exercicio.cs
+│ ├── Treino.cs
+│ └── TreinoExercicio.cs
+│
+├── ViewModels
+│
+├── Views
+│
+├── Areas
+│ └── Identity
+│ └── Pages
+│ └── Account
+│
+├── Properties
+│
+└── Program.cs
+
+
+---
+
+# ⚙️ Como Rodar o Projeto Localmente
+
+### 1️⃣ Clone o repositório
+
+git clone https://github.com/seuusuario/treinemais.git
+
+### 2️⃣ Entre na pasta do projeto
+
+cd treinemais
+
+### 3️⃣ Configure a connection string
+
+Arquivo:
+
+appsettings.json
+
+Configure para seu SQL Server local.
+
+---
+
+### 4️⃣ Execute as migrations
+
+dotnet ef database update
+
+---
+
+### 5️⃣ Rode o projeto
+
+dotnet run
+
+
+---
+
+# 🗄 Banco de Dados
+
+Banco utilizado:
+
+**SQL Server**
+
+Gerenciado por:
+
+**Entity Framework Core**
+
+Principais entidades:
+
+- ApplicationUser
+- Treino
+- Exercicio
+- TreinoExercicio
+
+---
+
+# 🚀 Deploy
+
+O sistema será publicado em:
+
+treinemais.lucianoferreiradev.com
+
+
+Hospedado em **VPS Linux** com:
+
+- Nginx
+- .NET Runtime
+- SQL Server
+
+---
+
+# 🔮 Próximas Evoluções
 
 - Histórico de treinos
 - Gráficos de desempenho
-- Upload de vídeos
-- API com JWT
+- Upload de vídeos de exercícios
+- API REST com JWT
 - Aplicativo mobile (MAUI ou React Native)
+- Área administrativa completa
 
 ---
 
-## 📌 Status do Projeto
+# 👨‍💻 Autor
 
-Em desenvolvimento 🚧
+Luciano Ferreira  
+Desenvolvedor Full Stack .NET
+
+🌐 Portfólio  
+https://lucianoferreiradev.com
+
+💼 LinkedIn  
+https://www.linkedin.com/in/lucianoferreira92/
+
+💻 GitHub  
+https://github.com/LucianoSF1992
