@@ -9,7 +9,7 @@ using TreineMais.ViewModels.Instrutores;
 
 namespace TreineMais.Controllers
 {
-    [Authorize(Roles = "Admin,Instrutor")]
+    [Authorize] // ✅ controle por action
     public class AdminController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
@@ -21,14 +21,18 @@ namespace TreineMais.Controllers
             _context = context;
         }
 
-        // ===================== ALUNOS =====================
+        // ===================== ALUNOS (INSTRUTOR) =====================
 
+        [Authorize(Roles = "Instrutor")]
         public async Task<IActionResult> Alunos()
         {
+            // Lista de alunos (por enquanto: todos na role Aluno)
+            // Próxima evolução: filtrar por instrutor (alunos do instrutor logado).
             var alunos = await _userManager.GetUsersInRoleAsync("Aluno");
-            return View(alunos.ToList());
+            return View(alunos.OrderBy(a => a.Email).ToList());
         }
 
+        [Authorize(Roles = "Instrutor")]
         public IActionResult CriarAluno()
         {
             return View();
@@ -36,12 +40,13 @@ namespace TreineMais.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Instrutor")]
         public async Task<IActionResult> CriarAluno(ApplicationUser? model, string? senha)
         {
             if (model is null)
                 return BadRequest();
 
-            var email = model.Email?.Trim();
+            var email = model.Email?.Trim().ToLower();
 
             if (string.IsNullOrWhiteSpace(email))
             {
@@ -69,6 +74,7 @@ namespace TreineMais.Controllers
                 NomeCompleto = model.NomeCompleto,
                 Idade = model.Idade,
                 Objetivo = model.Objetivo,
+                TipoUsuario = "Aluno", // ✅ mantém consistência com Dashboard
                 EmailConfirmed = true
             };
 
@@ -76,8 +82,8 @@ namespace TreineMais.Controllers
 
             if (result.Succeeded)
             {
-                // ✅ fonte de verdade = Role
                 await _userManager.AddToRoleAsync(novoAluno, "Aluno");
+                TempData["Sucesso"] = "Aluno criado com sucesso!";
                 return RedirectToAction(nameof(Alunos));
             }
 
@@ -87,17 +93,101 @@ namespace TreineMais.Controllers
             return View(model);
         }
 
+        // ✅ NOVO: Editar aluno (GET)
+        [Authorize(Roles = "Instrutor")]
+        public async Task<IActionResult> EditarAluno(string id)
+        {
+            if (string.IsNullOrWhiteSpace(id))
+                return RedirectToAction(nameof(Alunos));
+
+            var aluno = await _userManager.FindByIdAsync(id);
+            if (aluno == null)
+                return NotFound();
+
+            // proteção: só edita se for Aluno
+            if (!await _userManager.IsInRoleAsync(aluno, "Aluno"))
+                return Forbid();
+
+            return View(aluno);
+        }
+
+        // ✅ NOVO: Editar aluno (POST)
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Instrutor")]
+        public async Task<IActionResult> EditarAluno(ApplicationUser model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var aluno = await _userManager.FindByIdAsync(model.Id);
+            if (aluno == null)
+                return NotFound();
+
+            if (!await _userManager.IsInRoleAsync(aluno, "Aluno"))
+                return Forbid();
+
+            // Atualiza campos permitidos
+            aluno.NomeCompleto = model.NomeCompleto;
+            aluno.Idade = model.Idade;
+            aluno.Objetivo = model.Objetivo;
+
+            // Email pode ser editável (se quiser travar, basta remover isso)
+            var novoEmail = model.Email?.Trim().ToLower();
+            if (!string.IsNullOrWhiteSpace(novoEmail) && novoEmail != aluno.Email)
+            {
+                var exists = await _userManager.FindByEmailAsync(novoEmail);
+                if (exists != null && exists.Id != aluno.Id)
+                {
+                    ModelState.AddModelError(nameof(model.Email), "Já existe um usuário com este e-mail.");
+                    return View(model);
+                }
+
+                aluno.Email = novoEmail;
+                aluno.UserName = novoEmail;
+            }
+
+            var update = await _userManager.UpdateAsync(aluno);
+            if (!update.Succeeded)
+            {
+                foreach (var error in update.Errors)
+                    ModelState.AddModelError(string.Empty, error.Description);
+
+                return View(model);
+            }
+
+            TempData["Sucesso"] = "Aluno atualizado com sucesso!";
+            return RedirectToAction(nameof(Alunos));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Instrutor")]
         public async Task<IActionResult> ExcluirAluno(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
                 return RedirectToAction(nameof(Alunos));
 
             var aluno = await _userManager.FindByIdAsync(id);
+            if (aluno == null)
+                return RedirectToAction(nameof(Alunos));
 
-            if (aluno != null)
-                await _userManager.DeleteAsync(aluno);
+            if (!await _userManager.IsInRoleAsync(aluno, "Aluno"))
+                return Forbid();
+
+            // opcional: impedir excluir o próprio usuário logado (se for aluno por algum motivo)
+            var userLogado = await _userManager.GetUserAsync(User);
+            if (userLogado != null && aluno.Id == userLogado.Id)
+            {
+                TempData["Erro"] = "Você não pode excluir o próprio usuário logado.";
+                return RedirectToAction(nameof(Alunos));
+            }
+
+            var result = await _userManager.DeleteAsync(aluno);
+
+            TempData["Sucesso"] = result.Succeeded
+                ? "Aluno excluído com sucesso!"
+                : "Não foi possível excluir o aluno.";
 
             return RedirectToAction(nameof(Alunos));
         }
@@ -149,7 +239,6 @@ namespace TreineMais.Controllers
                 return View(model);
             }
 
-            // (Opcional) valida se o alunoId pertence mesmo a um usuário na role Aluno
             var aluno = await _userManager.FindByIdAsync(model.AlunoId);
             if (aluno == null || !await _userManager.IsInRoleAsync(aluno, "Aluno"))
             {
@@ -178,7 +267,6 @@ namespace TreineMais.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Instrutores()
         {
-            // pega somente usuários que estão na role Instrutor
             var instrutores = await _userManager.GetUsersInRoleAsync("Instrutor");
             return View(instrutores.OrderBy(x => x.Email).ToList());
         }
@@ -211,10 +299,7 @@ namespace TreineMais.Controllers
                 UserName = email,
                 Email = email,
                 NomeCompleto = string.IsNullOrWhiteSpace(model.NomeCompleto) ? null : model.NomeCompleto.Trim(),
-
-                // ✅ mantém consistência com seus contadores do dashboard
                 TipoUsuario = "Instrutor",
-
                 EmailConfirmed = true
             };
 
@@ -245,7 +330,6 @@ namespace TreineMais.Controllers
             if (instrutor == null)
                 return RedirectToAction(nameof(Instrutores));
 
-            // proteção: não permitir excluir o próprio admin logado por acidente
             var userLogado = await _userManager.GetUserAsync(User);
             if (userLogado != null && instrutor.Id == userLogado.Id)
             {
@@ -253,7 +337,6 @@ namespace TreineMais.Controllers
                 return RedirectToAction(nameof(Instrutores));
             }
 
-            // opcional: bloqueia exclusão de Admin (se um admin estiver também em instrutor)
             if (await _userManager.IsInRoleAsync(instrutor, "Admin"))
             {
                 TempData["Erro"] = "Não é permitido excluir um usuário Admin.";

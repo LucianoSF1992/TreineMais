@@ -5,41 +5,84 @@
 }
 
 <div class="container mt-4">
-    <h2>Alunos Cadastrados</h2>
 
-    <a class="btn btn-success mb-3" asp-action="CriarAluno">
-        + Adicionar Novo Aluno
-    </a>
+    <div
+        class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-2 mb-3">
+        <div>
+            <h2 class="mb-1">Alunos Cadastrados</h2>
+            <div class="text-muted">Gerencie seus alunos (criar, editar e excluir)</div>
+        </div>
 
-    <a asp-controller="Dashboard" asp-action="Admin" class="btn btn-outline-secondary mb-3">
-        ← Voltar
-    </a>
+        <div class="d-flex gap-2">
+            <a class="btn btn-outline-secondary" asp-controller="Dashboard" asp-action="Instrutor">
+                ← Voltar
+            </a>
 
-    <table class="table table-striped table-bordered">
-        <thead>
-            <tr>
-                <th>Nome</th>
-                <th>Email</th>
-                <th>Idade</th>
-                <th>Objetivo</th>
-                <th>Ações</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var aluno in Model)
-            {
-                <tr>
-                    <td>@aluno.NomeCompleto</td>
-                    <td>@aluno.Email</td>
-                    <td>@aluno.Idade</td>
-                    <td>@aluno.Objetivo</td>
-                    <td>
-                        <a class="btn btn-danger btn-sm" asp-action="ExcluirAluno" asp-route-id="@aluno.Id">
-                            Excluir
-                        </a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+            <a class="btn btn-success" asp-action="CriarAluno">
+                + Adicionar Novo Aluno
+            </a>
+        </div>
+    </div>
+
+    @if (TempData["Sucesso"] != null)
+    {
+        <div class="alert alert-success">@TempData["Sucesso"]</div>
+    }
+
+    @if (TempData["Erro"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Erro"]</div>
+    }
+
+    @if (Model == null || !Model.Any())
+    {
+        <div class="alert alert-info">
+            Nenhum aluno cadastrado ainda.
+        </div>
+    }
+    else
+    {
+        <div class="card shadow-sm border-0">
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Nome</th>
+                            <th>Email</th>
+                            <th class="text-center" style="width: 90px;">Idade</th>
+                            <th>Objetivo</th>
+                            <th class="text-end" style="width: 200px;">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var aluno in Model)
+                        {
+                            <tr>
+                                <td>@(string.IsNullOrWhiteSpace(aluno.NomeCompleto) ? "—" : aluno.NomeCompleto)</td>
+                                <td>@(aluno.Email ?? "—")</td>
+                                <td class="text-center">@(aluno.Idade?.ToString() ?? "—")</td>
+                                <td>@(string.IsNullOrWhiteSpace(aluno.Objetivo) ? "—" : aluno.Objetivo)</td>
+
+                                <td class="text-end">
+                                    <a class="btn btn-sm btn-outline-primary"                           asp-action="EditarAluno"             asp-route-id="@aluno.Id">
+                                        Editar
+                                    </a>
+
+                                    <form asp-action="ExcluirAluno"                          method="post"               class="d-inline"
+                                          onsubmit="return confirm('Deseja realmente excluir este aluno?');">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@aluno.Id" />
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                                            Excluir
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+
 </div>
