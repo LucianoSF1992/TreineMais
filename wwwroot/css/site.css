@@ -47,8 +47,38 @@ body {
 body {
   display: flex;
   flex-direction: column;
+  font-family: 'Inter', sans-serif;
 }
 
 main {
   flex: 1;
+}
+
+section {
+  padding: 60px 0;
+}
+
+h2 {
+  margin-bottom: 20px;
+}
+
+.card {
+  border-radius: 12px;
+}
+
+.btn {
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+.hero {
+  background: linear-gradient(135deg, #1e3c72, #2a5298);
+}
+
+.hero h1 {
+  font-weight: 600;
 }
