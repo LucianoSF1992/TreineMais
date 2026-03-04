@@ -72,7 +72,7 @@ Email
 admin@treinemais.com
 
 Senha  
-Admin@123
+Admin123!
 
 ---
 
@@ -84,7 +84,7 @@ Email
 instrutor@treinemais.com
 
 Senha  
-Instrutor@123
+Instrutor123!
 
 ---
 
@@ -96,7 +96,7 @@ Email
 aluno@treinemais.com
 
 Senha  
-Aluno@123
+Aluno123!
 
 ---
 
