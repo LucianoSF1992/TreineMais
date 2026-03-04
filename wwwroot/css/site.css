@@ -38,3 +38,17 @@ body {
 .form-floating>.form-control:focus::placeholder {
   text-align: start;
 }
+
+hhtml,
+body {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
+}
