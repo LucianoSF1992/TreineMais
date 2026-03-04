@@ -147,7 +147,10 @@ namespace TreineMais.Controllers
             var vm = new AlunoDashboardViewModel
             {
                 TotalTreinos = meusTreinos.Count,
-                MeusTreinos = meusTreinos
+                MeusTreinos = meusTreinos,
+
+                Concluidos = meusTreinos.Count(t => t.Concluido),
+                Pendentes = meusTreinos.Count(t => !t.Concluido)
             };
 
             return View(vm);

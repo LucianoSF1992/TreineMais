@@ -5,6 +5,8 @@ namespace TreineMais.ViewModels.Dashboard
     public class AlunoDashboardViewModel
     {
         public int TotalTreinos { get; set; }
+        public int Concluidos { get; set; }
+        public int Pendentes { get; set; }
         public List<Treino> MeusTreinos { get; set; } = new();
     }
 }
