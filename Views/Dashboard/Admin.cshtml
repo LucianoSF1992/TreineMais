@@ -81,17 +81,21 @@
                     </a>
                 </div>
 
-                <div class="col-12 col-md-6 col-lg-3">
-                    <a class="btn btn-outline-primary w-100" asp-controller="Admin" asp-action="Treinos">
-                        Treinos
-                    </a>
-                </div>
+                @if (User.IsInRole("Instrutor"))
+                {
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <a class="btn btn-outline-primary w-100" asp-controller="Admin" asp-action="Treinos">
+                            Treinos
+                        </a>
+                    </div>
 
-                <div class="col-12 col-md-6 col-lg-3">
-                    <a class="btn btn-outline-primary w-100" asp-controller="Admin" asp-action="CriarTreino">
-                        Criar Treino
-                    </a>
-                </div>
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <a class="btn btn-outline-primary w-100" asp-controller="Admin" asp-action="CriarTreino">
+                            Criar Treino
+                        </a>
+                    </div>
+                }
+
             </div>
         </div>
     </div>
