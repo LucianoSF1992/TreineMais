@@ -65,37 +65,40 @@
             <div
                 class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-2 mb-3">
                 <h5 class="mb-0">Ações rápidas</h5>
-                <span class="text-muted small">Atalhos para tarefas frequentes</span>
+                <span class="text-muted small">Atalhos para tarefas administrativas</span>
             </div>
 
             <div class="row g-2">
+                <!-- ✅ ADMIN: gerenciar instrutores -->
                 <div class="col-12 col-md-6 col-lg-3">
-                    <a class="btn btn-primary w-100" asp-controller="Admin" asp-action="Alunos">
-                        Gerenciar Alunos
+                    <a class="btn btn-primary w-100" asp-controller="Admin" asp-action="Instrutores">
+                        Gerenciar Instrutores
                     </a>
                 </div>
 
                 <div class="col-12 col-md-6 col-lg-3">
-                    <a class="btn btn-outline-primary w-100" asp-controller="Admin" asp-action="CriarAluno">
-                        Criar Aluno
+                    <a class="btn btn-outline-primary w-100" asp-controller="Admin" asp-action="CriarInstrutor">
+                        Criar Instrutor
                     </a>
                 </div>
 
-                @if (User.IsInRole("Instrutor"))
-                {
-                    <div class="col-12 col-md-6 col-lg-3">
-                        <a class="btn btn-outline-primary w-100" asp-controller="Admin" asp-action="Treinos">
-                            Treinos
-                        </a>
-                    </div>
+                <!-- ✅ Opcional: manter botão para gerenciar usuários futuramente -->
+                <div class="col-12 col-md-6 col-lg-3">
+                    <button class="btn btn-outline-secondary w-100" disabled title="Funcionalidade futura">
+                        Gerenciar Usuários
+                    </button>
+                </div>
 
-                    <div class="col-12 col-md-6 col-lg-3">
-                        <a class="btn btn-outline-primary w-100" asp-controller="Admin" asp-action="CriarTreino">
-                            Criar Treino
-                        </a>
-                    </div>
-                }
+                <div class="col-12 col-md-6 col-lg-3">
+                    <button class="btn btn-outline-secondary w-100" disabled title="Funcionalidade futura">
+                        Configurações
+                    </button>
+                </div>
+            </div>
 
+            <div class="mt-3 text-muted small">
+                <strong>Obs.:</strong> gerenciamento de <strong>alunos</strong> e <strong>treinos</strong> é
+                responsabilidade do perfil <strong>Instrutor</strong>.
             </div>
         </div>
     </div>
