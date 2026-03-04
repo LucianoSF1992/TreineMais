@@ -1,5 +1,10 @@
 # 💪 Treine+ (TreineMais)
 
+![.NET](https://img.shields.io/badge/.NET-9.0-purple)
+![ASP.NET](https://img.shields.io/badge/ASP.NET-Core-blue)
+![SQL Server](https://img.shields.io/badge/Database-SQLServer-red)
+![License](https://img.shields.io/badge/license-MIT-green)
+
 Sistema web para academias e personal trainers gerenciarem treinos personalizados de alunos.
 
 Projeto desenvolvido como **MVP (Minimum Viable Product)** utilizando **ASP.NET Core MVC** e **SQL Server**, com autenticação baseada em **Identity**.
@@ -196,6 +201,21 @@ Hospedado em **VPS Linux** com:
 - SQL Server
 
 ---
+
+# 📸 Screenshots
+
+### Dashboard - Admin
+
+![Dashboard Admin](docs/dashboard-admin.png)
+
+### Dashboard - Aluno
+
+![Dashboard Aluno](docs/dashboard-aluno.png)
+
+### Criar Treino
+
+![Criar Treino](docs/criar-treino.png)
+
 
 # 🔮 Próximas Evoluções
 
