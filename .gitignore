@@ -489,3 +489,15 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+# Production config
+appsettings.Production.json
+
+# Deploy output
+publish/
+
+# Deploy scripts (optional)
+deploy.sh
+deploy_portfolio.sh
+
+*.db
