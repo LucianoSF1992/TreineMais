@@ -233,14 +233,16 @@ namespace TreineMais.Controllers
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return Challenge();
 
-            if (!ModelState.IsValid)
+            if (string.IsNullOrWhiteSpace(model.AlunoId))
             {
+                ModelState.AddModelError(nameof(model.AlunoId), "Selecione um aluno.");
                 var alunos = await _userManager.GetUsersInRoleAsync("Aluno");
                 model.Alunos = alunos.ToList();
                 return View(model);
             }
 
             var aluno = await _userManager.FindByIdAsync(model.AlunoId);
+            
             if (aluno == null || !await _userManager.IsInRoleAsync(aluno, "Aluno"))
             {
                 ModelState.AddModelError(nameof(model.AlunoId), "Selecione um aluno válido.");
