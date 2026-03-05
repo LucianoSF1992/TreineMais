@@ -14,6 +14,9 @@ builder.Services.AddRazorPages();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddHealthChecks()
+    .AddDbContextCheck<AppDbContext>("db");
+
 // Identity
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
     {
@@ -72,6 +75,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+app.MapHealthChecks("/health");
 
 app.UseAuthentication();
 app.UseAuthorization();
