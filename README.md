@@ -62,42 +62,27 @@ Pode:
 
 ## 🔐 Usuários de Teste
 
-Para facilitar a avaliação do sistema, foram criados três perfis de usuário:
+Para facilitar a avaliação do sistema, foram criados três perfis de usuário.
 
 ### 👑 Admin
-
 Responsável pela visão administrativa do sistema.
 
-Email  
-admin@treinemais.com
+Email: admin@treinemais.com  
+Senha: Admin@123
 
-Senha  
-Admin123!
-
----
 
 ### 👨‍🏫 Instrutor
-
 Pode cadastrar alunos e criar treinos personalizados.
 
-Email  
-instrutor@treinemais.com
+Email: instrutor@treinemais.com  
+Senha: Instrutor@123
 
-Senha  
-Instrutor123!
-
----
 
 ### 👨‍🎓 Aluno
-
 Pode visualizar seus treinos e marcar exercícios como concluídos.
 
-Email  
-aluno@treinemais.com
-
-Senha  
-Aluno123!
-
+Email: aluno@treinemais.com  
+Senha: Aluno@123
 ---
 
 # 🧱 Funcionalidades do MVP
