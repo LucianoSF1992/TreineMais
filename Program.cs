@@ -72,9 +72,9 @@ app.MapControllerRoute(
 app.MapRazorPages();
 
 // ✅ Seed Identity (Roles + usuários de teste) com proteção
-using (var scope = app.Services.CreateScope())
+using (var seedScope = app.Services.CreateScope())
 {
-    var services = scope.ServiceProvider;
+    var services = seedScope.ServiceProvider;
     var logger = services.GetRequiredService<ILogger<Program>>();
 
     try
