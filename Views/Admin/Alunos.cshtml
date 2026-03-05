@@ -64,11 +64,17 @@
                                 <td>@(string.IsNullOrWhiteSpace(aluno.Objetivo) ? "—" : aluno.Objetivo)</td>
 
                                 <td class="text-end">
-                                    <a class="btn btn-sm btn-outline-primary"                           asp-action="EditarAluno"             asp-route-id="@aluno.Id">
+
+                                    <a class="btn btn-sm btn-outline-success"   asp-controller="Admin"   asp-action="CriarTreino"
+                                           asp-route-alunoId="@aluno.Id">
+                                        Criar Treino
+                                    </a>
+
+                                    <a class="btn btn-sm btn-outline-primary" asp-action="EditarAluno" asp-route-id="@aluno.Id">
                                         Editar
                                     </a>
 
-                                    <form asp-action="ExcluirAluno"                          method="post"               class="d-inline"
+                                    <form asp-action="ExcluirAluno" method="post" class="d-inline"
                                           onsubmit="return confirm('Deseja realmente excluir este aluno?');">
                                         @Html.AntiForgeryToken()
                                         <input type="hidden" name="id" value="@aluno.Id" />

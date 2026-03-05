@@ -212,13 +212,14 @@ namespace TreineMais.Controllers
         }
 
         [Authorize(Roles = "Instrutor")]
-        public async Task<IActionResult> CriarTreino()
+        public async Task<IActionResult> CriarTreino(string? alunoId = null)
         {
             var alunos = await _userManager.GetUsersInRoleAsync("Aluno");
 
             var viewModel = new CriarTreinoViewModel
             {
-                Alunos = alunos.ToList()
+                Alunos = alunos.ToList(),
+                AlunoId = alunoId // ✅ pré-seleciona no dropdown
             };
 
             return View(viewModel);
