@@ -3,6 +3,13 @@
 ##
 ## Get latest from `dotnet new gitignore`
 
+# Local environment configs (do not commit secrets)
+appsettings.Development.json
+appsettings.Local.json
+
+# User Secrets
+secrets.json
+
 # dotenv files
 .env
 
