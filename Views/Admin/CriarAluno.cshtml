@@ -1,37 +1,86 @@
 @model TreineMais.Models.ApplicationUser
 
+@{
+    ViewData["Title"] = "Criar Aluno";
+}
+
 <div class="container mt-4">
-    <a asp-controller="Admin" asp-action="Alunos" class="btn btn-outline-secondary mb-3">
-        ← Voltar
-    </a>
-    <h2>Novo Aluno</h2>
 
-    <form asp-action="CriarAluno" method="post">
-        <div class="mb-3">
-            <label>Nome Completo</label>
-            <input asp-for="NomeCompleto" class="form-control" />
+    <div
+        class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-2 mb-3">
+        <div>
+            <h2 class="mb-1">Criar Aluno</h2>
+            <div class="text-muted">Cadastre um novo aluno para receber treinos</div>
         </div>
 
-        <div class="mb-3">
-            <label>Email</label>
-            <input asp-for="Email" class="form-control" />
-        </div>
+        <a asp-action="Alunos" class="btn btn-outline-secondary">
+            ← Voltar
+        </a>
+    </div>
 
-        <div class="mb-3">
-            <label>Idade</label>
-            <input asp-for="Idade" class="form-control" />
-        </div>
+    <div class="card shadow-sm border-0">
+        <div class="card-body">
 
-        <div class="mb-3">
-            <label>Objetivo</label>
-            <input asp-for="Objetivo" class="form-control" />
-        </div>
+            <form asp-action="CriarAluno" method="post">
+                @Html.AntiForgeryToken()
 
-        <div class="mb-3">
-            <label>Senha</label>
-            <input type="password" name="senha" class="form-control" />
-        </div>
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-        <button class="btn btn-primary">Salvar</button>
-    </form>
+                <div class="row g-3">
+
+                    <div class="col-12 col-md-6">
+                        <label asp-for="NomeCompleto" class="form-label">Nome</label>
+                        <input asp-for="NomeCompleto" class="form-control" placeholder="Ex: João da Silva" />
+                        <span asp-validation-for="NomeCompleto" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                        <label asp-for="Email" class="form-label">Email</label>
+                        <input asp-for="Email" class="form-control" placeholder="Ex: joao@email.com" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-12 col-md-3">
+                        <label asp-for="Idade" class="form-label">Idade</label>
+                        <input asp-for="Idade" class="form-control" type="number" min="1" max="120"
+                               placeholder="Ex: 25" />
+                        <span asp-validation-for="Idade" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-12 col-md-9">
+                        <label asp-for="Objetivo" class="form-label">Objetivo</label>
+                        <input asp-for="Objetivo" class="form-control"
+                               placeholder="Ex: Hipertrofia / Emagrecimento / Condicionamento" />
+                        <span asp-validation-for="Objetivo" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                        <label class="form-label">Senha</label>
+                        <input name="senha" type="password" class="form-control" placeholder="Crie uma senha segura" />
+                        <span class="text-danger">
+                            @Html.ValidationMessage("senha")
+                        </span>
+                    </div>
+
+                </div>
+
+                <div class="mt-4 d-flex gap-2">
+                    <button type="submit" class="btn btn-success">
+                        Salvar
+                    </button>
+
+                    <a asp-action="Alunos" class="btn btn-outline-secondary">
+                        Cancelar
+                    </a>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
