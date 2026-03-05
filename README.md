@@ -225,6 +225,10 @@ Hospedado em **VPS Linux** com:
 
 # 📸 Screenshots
 
+### Login
+
+![Login](docs/Tela-de-login.png)
+
 ### Dashboard - Admin
 
 ![Dashboard Admin](docs/dashboard-admin.png)
@@ -235,7 +239,11 @@ Hospedado em **VPS Linux** com:
 
 ### Criar Treino
 
-![Criar Treino](docs/criar-treino.png)
+![Criar Treino](docs/Tela-criar-treino.png)
+
+### Criar Aluno
+
+![Criar Aluno](docs/Tela-criar-aluno.png)
 
 
 # 🔮 Próximas Evoluções
