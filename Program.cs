@@ -44,6 +44,11 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 var app = builder.Build();
 
+var scope = app.Services.CreateScope();
+var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+db.Database.Migrate();
+
 // Pipeline
 if (!app.Environment.IsDevelopment())
 {
