@@ -77,12 +77,16 @@ namespace TreineMais.Data
             }
             else
             {
-                // mantém consistência do TipoUsuario no banco (caso tenha sido criado antes como null)
-                if (string.IsNullOrWhiteSpace(user.TipoUsuario))
+                // garante TipoUsuario
+                if (string.IsNullOrWhiteSpace(user.TipoUsuario) || user.TipoUsuario != tipoUsuario)
                 {
                     user.TipoUsuario = tipoUsuario;
                     await userManager.UpdateAsync(user);
                 }
+
+                // 🔑 força reset da senha
+                var token = await userManager.GeneratePasswordResetTokenAsync(user);
+                await userManager.ResetPasswordAsync(user, token, password);
             }
 
             if (!await userManager.IsInRoleAsync(user, role))
