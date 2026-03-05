@@ -1,6 +1,6 @@
 # 💪 Treine+ (TreineMais)
 
-![.NET](https://img.shields.io/badge/.NET-9.0-purple)
+![.NET](https://img.shields.io/badge/.NET-8.0-purple)
 ![ASP.NET](https://img.shields.io/badge/ASP.NET-Core-blue)
 ![SQL Server](https://img.shields.io/badge/Database-SQLServer-red)
 ![License](https://img.shields.io/badge/license-MIT-green)
@@ -12,17 +12,39 @@ Projeto desenvolvido como **MVP (Minimum Viable Product)** utilizando **ASP.NET 
 🌐 Sistema online:  
 https://treinemais.lucianoferreiradev.com
 
+# 🏗 Arquitetura
+
+O projeto segue uma arquitetura baseada em **camadas**, separando responsabilidades entre:
+
+- **Controllers** → controle das requisições HTTP
+- **Services (futuro)** → regras de negócio
+- **Models / Entities** → representação das entidades do sistema
+- **ViewModels** → comunicação entre Controller e View
+- **Views (Razor)** → interface do usuário
+
+O acesso a dados é realizado através do **Entity Framework Core**, utilizando o padrão **Code First com Migrations**.
+
 ---
 
 # 🚀 Tecnologias Utilizadas
 
-- .NET 9
+Backend
+- .NET 8
 - ASP.NET Core MVC
 - Entity Framework Core
-- SQL Server
 - ASP.NET Identity
-- Bootstrap 5
+
+Banco de Dados
+- SQL Server
+
+Frontend
 - Razor Views
+- Bootstrap 5
+
+Infraestrutura
+- Linux VPS
+- Nginx
+- Docker
 
 ---
 
@@ -87,16 +109,14 @@ Senha: Aluno@123
 
 # 🧱 Funcionalidades do MVP
 
-✔ Login com autenticação via Identity  
-✔ Diferenciação de perfil (Instrutor / Aluno)  
-✔ Dashboard do instrutor  
-✔ Dashboard do aluno  
-✔ Cadastro de alunos  
-✔ Criação de treinos  
-✔ Cadastro de exercícios  
-✔ Visualização de treinos do aluno  
-✔ Marcação de treino concluído  
-✔ Layout responsivo  
+- Autenticação com ASP.NET Identity
+- Controle de acesso por perfil (Admin / Instrutor / Aluno)
+- Cadastro e gerenciamento de alunos
+- Criação de treinos personalizados
+- Cadastro de exercícios
+- Visualização de treinos pelos alunos
+- Marcação de exercícios concluídos
+- Interface responsiva 
 
 ---
 
@@ -145,7 +165,7 @@ TreineMais
 
 ### 1️⃣ Clone o repositório
 
-git clone https://github.com/seuusuario/treinemais.git
+git clone https://github.com/LucianoSF1992/TreineMais.git
 
 ### 2️⃣ Entre na pasta do projeto
 
@@ -195,16 +215,25 @@ Principais entidades:
 
 # 🚀 Deploy
 
-O sistema será publicado em:
+O sistema está hospedado em uma **VPS Linux** configurada manualmente.
 
-treinemais.lucianoferreiradev.com
+Infraestrutura utilizada:
 
+- **Ubuntu Server**
+- **Nginx** (Reverse Proxy)
+- **.NET Runtime**
+- **SQL Server em container Docker**
+- **Certificado SSL (Let's Encrypt)**
 
-Hospedado em **VPS Linux** com:
+Arquitetura de deploy:
 
-- Nginx
-- .NET Runtime
-- SQL Server
+Internet
+↓
+Nginx (Reverse Proxy)
+↓
+ASP.NET Core (Kestrel)
+↓
+SQL Server
 
 ---
 
