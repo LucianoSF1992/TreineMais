@@ -102,6 +102,10 @@ namespace TreineMais.Controllers
 
             var totalTreinos = await _context.Treinos.CountAsync(t => t.InstrutorId == user.Id);
 
+            var totalAlunos = await _context.Users
+                .Where(u => u.TipoUsuario == "Aluno" && u.InstrutorId == user.Id)
+                .CountAsync();
+
             // ✅ NOVO: status geral p/ gráfico
             var concluidos = await _context.Treinos.CountAsync(t => t.InstrutorId == user.Id && t.Concluido);
             var pendentes = await _context.Treinos.CountAsync(t => t.InstrutorId == user.Id && !t.Concluido);
@@ -120,7 +124,7 @@ namespace TreineMais.Controllers
             var vm = new InstrutorDashboardViewModel
             {
                 TotalTreinos = totalTreinos,
-                TotalAlunos = resumoAlunos.Count,
+                TotalAlunos = totalAlunos,
                 MeusAlunos = resumoAlunos,
                 UltimosTreinos = ultimosTreinos,
 
