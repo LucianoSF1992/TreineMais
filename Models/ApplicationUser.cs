@@ -13,8 +13,12 @@ namespace TreineMais.Models
         [StringLength(200)]
         public string? Objetivo { get; set; }
 
-        // ✅ IMPORTANTE: usado no Dashboard e no Seed
         [StringLength(20)]
-        public string? TipoUsuario { get; set; } // "Admin" | "Instrutor" | "Aluno"
+        public string? TipoUsuario { get; set; } // Admin | Instrutor | Aluno
+
+        // ✅ RELAÇÃO COM INSTRUTOR
+        public string? InstrutorId { get; set; }
+
+        public ApplicationUser? Instrutor { get; set; }
     }
 }

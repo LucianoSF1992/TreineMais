@@ -67,6 +67,10 @@ namespace TreineMais.Controllers
                 return View(model);
             }
 
+            var instrutorLogado = await _userManager.GetUserAsync(User);
+            if (instrutorLogado == null)
+                return Challenge();
+
             var novoAluno = new ApplicationUser
             {
                 UserName = email,
@@ -74,7 +78,8 @@ namespace TreineMais.Controllers
                 NomeCompleto = model.NomeCompleto,
                 Idade = model.Idade,
                 Objetivo = model.Objetivo,
-                TipoUsuario = "Aluno", // ✅ mantém consistência com Dashboard
+                TipoUsuario = "Aluno",
+                InstrutorId = instrutorLogado.Id,
                 EmailConfirmed = true
             };
 
@@ -242,7 +247,7 @@ namespace TreineMais.Controllers
             }
 
             var aluno = await _userManager.FindByIdAsync(model.AlunoId);
-            
+
             if (aluno == null || !await _userManager.IsInRoleAsync(aluno, "Aluno"))
             {
                 ModelState.AddModelError(nameof(model.AlunoId), "Selecione um aluno válido.");
