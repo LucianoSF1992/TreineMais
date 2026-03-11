@@ -41,10 +41,12 @@ namespace TreineMais.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Instrutor")]
-        public async Task<IActionResult> CriarAluno(ApplicationUser? model, string? senha)
+        public async Task<IActionResult> CriarAluno(ApplicationUser model, string senha)
         {
-            if (model is null)
-                return BadRequest();
+            var instrutor = await _userManager.GetUserAsync(User);
+
+            if (instrutor == null)
+                return Challenge();
 
             var email = model.Email?.Trim().ToLower();
 
@@ -67,10 +69,6 @@ namespace TreineMais.Controllers
                 return View(model);
             }
 
-            var instrutorLogado = await _userManager.GetUserAsync(User);
-            if (instrutorLogado == null)
-                return Challenge();
-
             var novoAluno = new ApplicationUser
             {
                 UserName = email,
@@ -79,23 +77,22 @@ namespace TreineMais.Controllers
                 Idade = model.Idade,
                 Objetivo = model.Objetivo,
                 TipoUsuario = "Aluno",
-                InstrutorId = instrutorLogado.Id,
-                EmailConfirmed = true
+                InstrutorId = instrutor.Id
             };
 
             var result = await _userManager.CreateAsync(novoAluno, senha);
 
-            if (result.Succeeded)
+            if (!result.Succeeded)
             {
-                await _userManager.AddToRoleAsync(novoAluno, "Aluno");
-                TempData["Sucesso"] = "Aluno criado com sucesso!";
-                return RedirectToAction(nameof(Alunos));
+                foreach (var error in result.Errors)
+                    ModelState.AddModelError(string.Empty, error.Description);
+
+                return View(model);
             }
 
-            foreach (var error in result.Errors)
-                ModelState.AddModelError(string.Empty, error.Description);
+            await _userManager.AddToRoleAsync(novoAluno, "Aluno");
 
-            return View(model);
+            return RedirectToAction(nameof(Alunos));
         }
 
         // ✅ NOVO: Editar aluno (GET)

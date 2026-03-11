@@ -103,8 +103,7 @@ namespace TreineMais.Controllers
             var totalTreinos = await _context.Treinos.CountAsync(t => t.InstrutorId == user.Id);
 
             var totalAlunos = await _context.Users
-                .Where(u => u.TipoUsuario == "Aluno" && u.InstrutorId == user.Id)
-                .CountAsync();
+                .CountAsync(u => u.TipoUsuario == "Aluno" && u.InstrutorId == user.Id);
 
             // ✅ NOVO: status geral p/ gráfico
             var concluidos = await _context.Treinos.CountAsync(t => t.InstrutorId == user.Id && t.Concluido);
