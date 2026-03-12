@@ -228,7 +228,7 @@ namespace TreineMais.Controllers
             var viewModel = new CriarTreinoViewModel
             {
                 Alunos = alunos,
-                AlunoId = alunoId
+                AlunoId = alunoId ?? string.Empty
             };
 
             return View(viewModel);
