@@ -243,19 +243,10 @@ namespace TreineMais.Controllers
             if (instrutor == null)
                 return Challenge();
 
-            var aluno = await _context.Users
-                .FirstOrDefaultAsync(u =>
-                    u.Id == model.AlunoId &&
-                    u.TipoUsuario == "Aluno" &&
-                    u.InstrutorId == instrutor.Id);
-
-            if (aluno == null)
+            if (string.IsNullOrEmpty(model.AlunoId))
             {
-                ModelState.AddModelError(nameof(model.AlunoId), "Aluno inválido para este instrutor.");
-            }
+                ModelState.AddModelError(nameof(model.AlunoId), "Selecione um aluno.");
 
-            if (!ModelState.IsValid)
-            {
                 model.Alunos = await _context.Users
                     .Where(u => u.TipoUsuario == "Aluno" && u.InstrutorId == instrutor.Id)
                     .OrderBy(u => u.NomeCompleto)

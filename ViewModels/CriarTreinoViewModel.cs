@@ -4,7 +4,8 @@ namespace TreineMais.ViewModels
 {
     public class CriarTreinoViewModel
     {
-        public string? AlunoId { get; set; } = string.Empty;
+        [Required(ErrorMessage = "Selecione um aluno")]
+        public string AlunoId { get; set; } = string.Empty;
 
         public string NomeTreino { get; set; } = string.Empty;
 
