@@ -1,4 +1,5 @@
 using TreineMais.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace TreineMais.ViewModels
 {
