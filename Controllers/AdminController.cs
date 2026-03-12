@@ -216,12 +216,19 @@ namespace TreineMais.Controllers
         [Authorize(Roles = "Instrutor")]
         public async Task<IActionResult> CriarTreino(string? alunoId = null)
         {
-            var alunos = await _userManager.GetUsersInRoleAsync("Aluno");
+            var instrutor = await _userManager.GetUserAsync(User);
+            if (instrutor == null)
+                return Challenge();
+
+            var alunos = await _context.Users
+                .Where(u => u.TipoUsuario == "Aluno" && u.InstrutorId == instrutor.Id)
+                .OrderBy(u => u.NomeCompleto)
+                .ToListAsync();
 
             var viewModel = new CriarTreinoViewModel
             {
-                Alunos = alunos.ToList(),
-                AlunoId = alunoId // ✅ pré-seleciona no dropdown
+                Alunos = alunos,
+                AlunoId = alunoId
             };
 
             return View(viewModel);
