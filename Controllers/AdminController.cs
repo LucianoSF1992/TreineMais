@@ -235,43 +235,48 @@ namespace TreineMais.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         [Authorize(Roles = "Instrutor")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> CriarTreino(CriarTreinoViewModel model)
         {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null) return Challenge();
+            var instrutor = await _userManager.GetUserAsync(User);
+            if (instrutor == null)
+                return Challenge();
 
-            if (string.IsNullOrWhiteSpace(model.AlunoId))
+            var aluno = await _context.Users
+                .FirstOrDefaultAsync(u =>
+                    u.Id == model.AlunoId &&
+                    u.TipoUsuario == "Aluno" &&
+                    u.InstrutorId == instrutor.Id);
+
+            if (aluno == null)
             {
-                ModelState.AddModelError(nameof(model.AlunoId), "Selecione um aluno.");
-                var alunos = await _userManager.GetUsersInRoleAsync("Aluno");
-                model.Alunos = alunos.ToList();
-                return View(model);
+                ModelState.AddModelError(nameof(model.AlunoId), "Aluno inválido para este instrutor.");
             }
 
-            var aluno = await _userManager.FindByIdAsync(model.AlunoId);
-
-            if (aluno == null || !await _userManager.IsInRoleAsync(aluno, "Aluno"))
+            if (!ModelState.IsValid)
             {
-                ModelState.AddModelError(nameof(model.AlunoId), "Selecione um aluno válido.");
-                var alunos = await _userManager.GetUsersInRoleAsync("Aluno");
-                model.Alunos = alunos.ToList();
+                model.Alunos = await _context.Users
+                    .Where(u => u.TipoUsuario == "Aluno" && u.InstrutorId == instrutor.Id)
+                    .OrderBy(u => u.NomeCompleto)
+                    .ToListAsync();
+
                 return View(model);
             }
 
             var treino = new Treino
             {
-                Nome = model.NomeTreino,
+                Nome = model.NomeExercicio,
                 DiaSemana = model.DiaSemana,
                 AlunoId = model.AlunoId,
-                InstrutorId = user.Id
+                InstrutorId = instrutor.Id,
+                Concluido = false
             };
 
             _context.Treinos.Add(treino);
             await _context.SaveChangesAsync();
 
-            return RedirectToAction(nameof(Treinos));
+            return RedirectToAction("Instrutor", "Dashboard");
         }
 
         // ===================== INSTRUTORES (ADMIN) =====================
