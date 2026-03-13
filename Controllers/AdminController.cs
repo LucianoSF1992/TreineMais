@@ -9,7 +9,7 @@ using TreineMais.ViewModels.Instrutores;
 
 namespace TreineMais.Controllers
 {
-    [Authorize] // ✅ controle por action
+    [Authorize]
     public class AdminController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
@@ -21,15 +21,37 @@ namespace TreineMais.Controllers
             _context = context;
         }
 
+        // ===================== MÉTODO AUXILIAR =====================
+
+        private async Task<ApplicationUser?> ObterInstrutorLogadoAsync()
+        {
+            return await _userManager.GetUserAsync(User);
+        }
+
+        private async Task<ApplicationUser?> ObterAlunoDoInstrutorAsync(string alunoId, string instrutorId)
+        {
+            return await _context.Users
+                .FirstOrDefaultAsync(u =>
+                    u.Id == alunoId &&
+                    u.TipoUsuario == "Aluno" &&
+                    u.InstrutorId == instrutorId);
+        }
+
         // ===================== ALUNOS (INSTRUTOR) =====================
 
         [Authorize(Roles = "Instrutor")]
         public async Task<IActionResult> Alunos()
         {
-            // Lista de alunos (por enquanto: todos na role Aluno)
-            // Próxima evolução: filtrar por instrutor (alunos do instrutor logado).
-            var alunos = await _userManager.GetUsersInRoleAsync("Aluno");
-            return View(alunos.OrderBy(a => a.Email).ToList());
+            var instrutor = await ObterInstrutorLogadoAsync();
+            if (instrutor == null)
+                return Challenge();
+
+            var alunos = await _context.Users
+                .Where(u => u.TipoUsuario == "Aluno" && u.InstrutorId == instrutor.Id)
+                .OrderBy(a => a.Email)
+                .ToListAsync();
+
+            return View(alunos);
         }
 
         [Authorize(Roles = "Instrutor")]
@@ -43,7 +65,7 @@ namespace TreineMais.Controllers
         [Authorize(Roles = "Instrutor")]
         public async Task<IActionResult> CriarAluno(ApplicationUser model, string senha)
         {
-            var instrutor = await _userManager.GetUserAsync(User);
+            var instrutor = await ObterInstrutorLogadoAsync();
 
             if (instrutor == null)
                 return Challenge();
@@ -92,28 +114,27 @@ namespace TreineMais.Controllers
 
             await _userManager.AddToRoleAsync(novoAluno, "Aluno");
 
+            TempData["Sucesso"] = "Aluno criado com sucesso!";
             return RedirectToAction(nameof(Alunos));
         }
 
-        // ✅ NOVO: Editar aluno (GET)
         [Authorize(Roles = "Instrutor")]
         public async Task<IActionResult> EditarAluno(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
                 return RedirectToAction(nameof(Alunos));
 
-            var aluno = await _userManager.FindByIdAsync(id);
-            if (aluno == null)
-                return NotFound();
+            var instrutor = await ObterInstrutorLogadoAsync();
+            if (instrutor == null)
+                return Challenge();
 
-            // proteção: só edita se for Aluno
-            if (!await _userManager.IsInRoleAsync(aluno, "Aluno"))
+            var aluno = await ObterAlunoDoInstrutorAsync(id, instrutor.Id);
+            if (aluno == null)
                 return Forbid();
 
             return View(aluno);
         }
 
-        // ✅ NOVO: Editar aluno (POST)
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Instrutor")]
@@ -122,19 +143,18 @@ namespace TreineMais.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            var aluno = await _userManager.FindByIdAsync(model.Id);
-            if (aluno == null)
-                return NotFound();
+            var instrutor = await ObterInstrutorLogadoAsync();
+            if (instrutor == null)
+                return Challenge();
 
-            if (!await _userManager.IsInRoleAsync(aluno, "Aluno"))
+            var aluno = await ObterAlunoDoInstrutorAsync(model.Id, instrutor.Id);
+            if (aluno == null)
                 return Forbid();
 
-            // Atualiza campos permitidos
             aluno.NomeCompleto = model.NomeCompleto;
             aluno.Idade = model.Idade;
             aluno.Objetivo = model.Objetivo;
 
-            // Email pode ser editável (se quiser travar, basta remover isso)
             var novoEmail = model.Email?.Trim().ToLower();
             if (!string.IsNullOrWhiteSpace(novoEmail) && novoEmail != aluno.Email)
             {
@@ -170,14 +190,14 @@ namespace TreineMais.Controllers
             if (string.IsNullOrWhiteSpace(id))
                 return RedirectToAction(nameof(Alunos));
 
-            var aluno = await _userManager.FindByIdAsync(id);
-            if (aluno == null)
-                return RedirectToAction(nameof(Alunos));
+            var instrutor = await ObterInstrutorLogadoAsync();
+            if (instrutor == null)
+                return Challenge();
 
-            if (!await _userManager.IsInRoleAsync(aluno, "Aluno"))
+            var aluno = await ObterAlunoDoInstrutorAsync(id, instrutor.Id);
+            if (aluno == null)
                 return Forbid();
 
-            // opcional: impedir excluir o próprio usuário logado (se for aluno por algum motivo)
             var userLogado = await _userManager.GetUserAsync(User);
             if (userLogado != null && aluno.Id == userLogado.Id)
             {
@@ -202,8 +222,12 @@ namespace TreineMais.Controllers
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return Challenge();
 
-            var alunos = await _userManager.GetUsersInRoleAsync("Aluno");
-            ViewBag.Alunos = alunos.ToList();
+            var alunos = await _context.Users
+                .Where(u => u.TipoUsuario == "Aluno" && u.InstrutorId == user.Id)
+                .OrderBy(u => u.NomeCompleto)
+                .ToListAsync();
+
+            ViewBag.Alunos = alunos;
 
             var treinos = await _context.Treinos
                 .Where(t => t.InstrutorId == user.Id)
@@ -247,6 +271,22 @@ namespace TreineMais.Controllers
             {
                 ModelState.AddModelError(nameof(model.AlunoId), "Selecione um aluno.");
 
+                model.Alunos = await _context.Users
+                    .Where(u => u.TipoUsuario == "Aluno" && u.InstrutorId == instrutor.Id)
+                    .OrderBy(u => u.NomeCompleto)
+                    .ToListAsync();
+
+                return View(model);
+            }
+
+            var aluno = await _context.Users
+                .FirstOrDefaultAsync(u => u.Id == model.AlunoId &&
+                                          u.TipoUsuario == "Aluno" &&
+                                          u.InstrutorId == instrutor.Id);
+
+            if (aluno == null)
+            {
+                ModelState.AddModelError(nameof(model.AlunoId), "Aluno inválido.");
                 model.Alunos = await _context.Users
                     .Where(u => u.TipoUsuario == "Aluno" && u.InstrutorId == instrutor.Id)
                     .OrderBy(u => u.NomeCompleto)
